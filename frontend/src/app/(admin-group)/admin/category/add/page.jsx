@@ -1,9 +1,8 @@
 "use client";
-import { slugGenerator } from "@/helper/helper";
+import { axiosApiInstance, slugGenerator } from "@/helper/helper";
 import React, { useRef } from "react";
 import { FiTag as Tag, FiImage as ImageIcon, FiDroplet as Palette, FiCheck as Check, FiX as X } from "react-icons/fi";
-import axios from "axios";
-
+import { toast } from "react-toastify";
 
 export default function AddCategoryPage() {
     const categoryRef = useRef(); //userRef -> reference hook
@@ -22,13 +21,20 @@ export default function AddCategoryPage() {
             category_slug: slugRef.current.value
         }
 
-        axios.post('http://localhost:5000/category/create', data).then(
+        // axios.post('http://localhost:5000/category/create', data).then(
+        axiosApiInstance.post('category/create', data).then(
             (response) => {
-                console.log(response)
+                // console.log(response.data.msg)
+                toast.success(response.data.msg);
+                if (response.data.flag == 1) {
+                    categoryRef.current.value = ''
+                    slugRef.current.value = ''
+                }
             }
         ).catch(
             (error) => {
-                console.log(error)
+                // console.log(error)
+                toast.warning(error.data.msg);
             }
         )
     }
@@ -176,6 +182,8 @@ export default function AddCategoryPage() {
                             <button type="button" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm hover:cursor-pointer">Reset</button>
                         </div>
 
+
+                        {/* yaha/yha par changes karne hai -> toastify mein jo msg aa rha hai use yaha kaise show karwa sakte hai? */}
                         <div className="mt-4 flex items-center gap-3 rounded-md bg-green-50 p-3 text-sm text-green-700">
                             <Check className="h-4 w-4" /> Saved successfully.
                         </div>

@@ -1,8 +1,8 @@
-const axios = require("axios");
+import { axiosApiInstance } from "@/helper/helper";
 
 const getCategories = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/category')
+        const response = await axiosApiInstance.get('category')
         if (response.data.flag == 1) {
             return response.data.categories
         } else {

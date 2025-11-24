@@ -1,3 +1,5 @@
+import axios from "axios";
+
 function slugGenerator(str) {
     return str
         .toLowerCase()
@@ -7,4 +9,8 @@ function slugGenerator(str) {
         .replace(/-+/g, '-');        // collapse multiple hyphens
 }
 
-export { slugGenerator }
+const axiosApiInstance = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
+});
+
+export { slugGenerator, axiosApiInstance }

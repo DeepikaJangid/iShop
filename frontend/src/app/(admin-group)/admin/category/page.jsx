@@ -7,10 +7,8 @@ import Link from "next/link";
 export default async function AdminCategoryPage() {
     const categoriesData = await getCategories();
 
-
-
     return (
-        <div className="min-h-screen bg-gray-50 p-10">
+        <div className="min-h-screen bg-gray-50 p-4 md:p-7 lg:10">
 
             {/* Dashboard Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -33,13 +31,13 @@ export default async function AdminCategoryPage() {
             </div>
 
             {/* Header + Add Button */}
-            <div className="flex justify-between items-center mb-8">
-                <div>
+            <div className="flex-col md:flex md:flex-row justify-between items-center mb-8">
+                <div className="">
                     <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Manage Categories</h1>
                     <p className="text-gray-500">Quickly update, feature, or toggle your categories in one place.</p>
                 </div>
                 <Link href={'/admin/category/add'}
-                    className="flex items-center gap-2 bg-linear-to-r from-[#01A49E] to-[#00C9B7] text-white px-6 py-3 rounded-full shadow-lg hover:cursor-pointer hover:from-[#00C9B7] hover:to-[#01A49E] transition transform hover:-translate-y-1">
+                    className="flex items-center gap-2 bg-linear-to-r from-[#01A49E] to-[#00C9B7] text-white px-6 py-3 rounded-full shadow-lg hover:cursor-pointer hover:from-[#00C9B7] hover:to-[#01A49E] transition transform hover:-translate-y-1 mt-3 md:mt-0">
                     <FaPlus /> Add Category
                 </Link>
             </div>
@@ -73,11 +71,11 @@ export default async function AdminCategoryPage() {
 
                                     {/* Toggle Switches */}
                                     {/* <div className="flex items-center gap-6 mb-4"> */}
-                                    <label className="flex items-center space-x-2 cursor-pointer mb-4   ">
-                                        <StatusToggle status={cat.status} />
-                                        <StatusToggle status={cat.on_home} />
-                                        <StatusToggle status={cat.is_best} />
-                                        <StatusToggle status={cat.is_top} />
+                                    <label className="flex items-center flex-wrap gap2 md:gap-2 cursor-pointer mb-4">
+                                        <StatusToggle id={cat._id} status={cat.status} statusType='status' />
+                                        <StatusToggle id={cat._id} status={cat.on_home} statusType='home' />
+                                        <StatusToggle id={cat._id} status={cat.is_best} statusType='best' />
+                                        <StatusToggle id={cat._id} status={cat.is_top} statusType='top' />
                                     </label>
                                     {/* </div> */}
 
