@@ -11,18 +11,29 @@ export default function AddCategoryPage() {
     const createSlug = () => {
         const slug = slugGenerator(categoryRef.current.value);
         slugRef.current.value = slug;
-
     }
 
     const submitHandler = (event) => {
         event.preventDefault();
-        const data = {
-            category_name: categoryRef.current.value,
-            category_slug: slugRef.current.value
-        }
+        // console.log(event.target.image.files[0]) //files - cause input type is file.. after that it will give filelist
+
+        // FormData media file bhejni ho tab use hoga agar media files nahi hai to fir object bana kr bhej sakte hai
+        // const data = {
+        //     category_name: categoryRef.current.value,
+        //     category_slug: slugRef.current.value
+        // } aise.
+
+
+        const formData = new FormData(); //image string mein nahi hota, binary data hota hai image kya to object mein binary data nahi ja sakta isliye ek FormData object banaya hai jiske andar binary data jayega. formdata (img, audio, video ) binary data leke server ke pas ja sakta hai using browser api.
+
+        formData.append('category_image', event.target.image.files[0]);
+        //controller mein jo name define kiya hua, user se data lene ke liye wahi aayega
+        // & event target krke jo 0th index pe file hai uski detail leke aa raha hai woh
+        formData.append('category_name', categoryRef.current.value);
+        formData.append('category_slug', slugRef.current.value);
 
         // axios.post('http://localhost:5000/category/create', data).then(
-        axiosApiInstance.post('category/create', data).then(
+        axiosApiInstance.post('category/create', formData).then(
             (response) => {
                 // console.log(response.data.msg)
                 toast.success(response.data.msg);
@@ -33,7 +44,6 @@ export default function AddCategoryPage() {
             }
         ).catch(
             (error) => {
-                // console.log(error)
                 toast.warning(error.data.msg);
             }
         )
@@ -93,7 +103,7 @@ export default function AddCategoryPage() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-slate-700">Description</label>
-                                <textarea defaultValue="A compact, warm jacket collection for winter — insulated, water-resistant and stylish." rows={4} placeholder="Short description to show on category landing pages and in meta tags." className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-200" />
+                                <textarea defaultValue="A compact, warm collection for laptop — insulated, water-resistant and stylish." rows={4} placeholder="Short description to show on category landing pages and in meta tags." className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-200" />
                                 <div className="mt-1 flex items-center justify-between text-xs text-slate-400">
                                     <div>143/1000</div>
                                 </div>
@@ -115,6 +125,19 @@ export default function AddCategoryPage() {
                                     <input type="number" defaultValue={10} min={0} max={999} className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-200" />
                                 </div>
                             </div>
+
+                            {/* Image Upload Section */}
+                            <div>
+                                <label className="mb-2 block text-sm font-medium text-slate-700">Category Image</label>
+                                <div className="flex flex-col items-center gap-4">
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        accept="image/*"
+                                        className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-200" />
+                                    <p className="mt-1 text-xs text-slate-400">Upload a category image (JPG, PNG, or GIF, max 3MB).</p>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -130,7 +153,10 @@ export default function AddCategoryPage() {
                                 <label className="mb-2 block text-sm font-medium text-slate-700">Thumbnail</label>
                                 <div className="rounded-lg border border-dashed border-slate-200 p-3">
                                     <div className="relative">
-                                        <img src="/example-thumbnail.jpg" alt="thumbnail preview" className="w-full rounded-md object-cover" style={{ maxHeight: 160 }} />
+                                        <img src="/example-thumbnail.jpg"
+                                            alt="thumbnail preview"
+                                            className="w-full rounded-md object-cover"
+                                            style={{ maxHeight: 160 }} />
                                         <button type="button" className="absolute top-2 right-2 inline-flex items-center gap-2 rounded-md bg-white/80 px-2 py-1 text-xs shadow">
                                             <X className="h-4 w-4" /> Remove
                                         </button>
@@ -171,8 +197,8 @@ export default function AddCategoryPage() {
                             <div className="mt-2">
                                 <label className="mb-2 block text-sm font-medium text-slate-700">SEO Preview</label>
                                 <div className="rounded-md border border-slate-100 bg-slate-50 p-3">
-                                    <div className="truncate text-sm font-medium text-slate-900">Winter Jackets</div>
-                                    <div className="mt-1 truncate text-xs text-slate-500">/categories/winter-jackets</div>
+                                    <div className="truncate text-sm font-medium text-slate-900">Laptop</div>
+                                    <div className="mt-1 truncate text-xs text-slate-500">/categories/laptop</div>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +207,6 @@ export default function AddCategoryPage() {
                             <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm bg-slate-900 hover:bg-slate-800 hover:cursor-pointer">Save Category</button>
                             <button type="button" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm hover:cursor-pointer">Reset</button>
                         </div>
-
 
                         {/* yaha/yha par changes karne hai -> toastify mein jo msg aa rha hai use yaha kaise show karwa sakte hai? */}
                         <div className="mt-4 flex items-center gap-3 rounded-md bg-green-50 p-3 text-sm text-green-700">

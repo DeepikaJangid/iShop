@@ -3,12 +3,12 @@ const { getData } = require('../controllers/ColorController');
 
 const ColorRouter = express.Router();
 
-colorRouter.get(
+ColorRouter.get(
     "/",
     getData()
 )
 
-colorRouter.post(
+ColorRouter.post(
     "/create",
     createData()
 )

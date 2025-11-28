@@ -1,3 +1,4 @@
+const messages = require("../messages");
 
 const getData = async (req, res) => {
     try {

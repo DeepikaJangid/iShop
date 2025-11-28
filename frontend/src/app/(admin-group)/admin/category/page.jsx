@@ -3,9 +3,11 @@ import { getCategories } from "@/api-calls/category";
 import { FaPlus, FaSearch, FaEdit, FaTrash, FaEye, FaTag } from "react-icons/fa";
 import StatusToggle from "@/components/admin/StatusToggle";
 import Link from "next/link";
+import DeleteData from "@/components/admin/DeleteBtn";
 
 export default async function AdminCategoryPage() {
-    const categoriesData = await getCategories();
+    const categoriesDataJSON = await getCategories();
+    const categoriesData = categoriesDataJSON.categories;
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-7 lg:10">
@@ -61,11 +63,21 @@ export default async function AdminCategoryPage() {
                             return (
                                 <div key={cat._id} className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition transform hover:-translate-y-1">
                                     <div className="flex justify-between items-start mb-4">
+
                                         <div className="flex items-center gap-3">
-                                            <FaTag className="text-indigo-500 text-2xl" />
+                                            <FaTag className="text-[#01A49E] text-2xl" />
                                             <h2 className="text-xl font-semibold text-gray-900">{cat.name}</h2>
                                         </div>
-                                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">{cat.status}</span>
+
+                                        {/* Image Section */}
+
+                                        <div className="w-25 h-20 mb-4">
+                                            <img
+                                                src={categoriesDataJSON.imageURL + cat.image_name}
+                                                alt={cat.name}
+                                                className="object-contain w-full h-full rounded-xl shadow-sm"
+                                            />
+                                        </div>
                                     </div>
                                     <p className="text-gray-500 mb-4">Slug: <span className="text-gray-900 font-medium lowercase">{cat.slug}</span></p>
 
@@ -81,9 +93,9 @@ export default async function AdminCategoryPage() {
 
                                     {/* Action Icons */}
                                     <div className="flex justify-end items-center gap-3">
-                                        <button className="text-blue-600 hover:text-blue-800 transition"><FaEdit /></button>
-                                        <button className="text-red-600 hover:text-red-800 transition"><FaTrash /></button>
-                                        <button className="text-gray-600 hover:text-gray-800 transition"><FaEye /></button>
+                                        <Link href={`/admin/category/edit/${cat._id}`} className="text-blue-600 hover:text-blue-800 transition hover:cursor-pointer"><FaEdit /></Link>
+                                        <DeleteData id={cat._id} />
+                                        {/* <button className="text-gray-600 hover:text-gray-800 transition"><FaEye /></button> */}
                                     </div>
                                 </div>
                             )

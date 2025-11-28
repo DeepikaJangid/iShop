@@ -15,6 +15,23 @@ const messages = {
         msg: "Data does not exist.",
         flag: 0
     },
+    image_upload_unsuccessful: {
+        msg: "Uploading Imgae went Unsuccessful.",
+        flag: 0
+    },
+    image_upload_successful: {
+        msg: "Image was Uploaded Successfully.",
+        flag: 1
+    },
+    data_deleted: {
+        msg: "Data Deleted Successfully.",
+        flag: 1
+    },
+    data_updated: {
+        msg: "Data Updated Successfully.",
+        flag: 1
+    }
+
 }
 
 module.exports = messages;

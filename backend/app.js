@@ -10,7 +10,11 @@ const app = express();
 app.use(cors(
     { origin: "http://localhost:3000" }
 ));
-app.use(express.json())
+app.use(express.json());
+app.use(express.static("public"));
+// http://localhost:5000/images/category/20251125_180203_728_login.svg.png
+// URL for accessing photos
+//lives the public folder in the server/backend folder so that images can be accessed directly using the url and the image file name
 
 // app.use('/brand')
 app.use('/category', CategoryRouter);
