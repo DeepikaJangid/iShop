@@ -4,8 +4,14 @@ const ColorSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            max: 15,
+            max: 20,
             required: true,
+        },
+        slug: {
+            type: String,
+            max: 25,
+            required: true,
+            unique: true,
         },
         code: {
             type: String,

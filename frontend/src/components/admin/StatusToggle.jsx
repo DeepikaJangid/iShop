@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react'
 import { toast } from 'react-toastify';
 
-export default function StatusToggle({ status, statusType, id }) {
+export default function StatusToggle({ status, statusType, url }) {
     const router = useRouter();
     const getText = () => {
         if (statusType === 'status') return status ? "Active" : "Inactive";
@@ -15,14 +15,15 @@ export default function StatusToggle({ status, statusType, id }) {
     }
 
     const statusToggler = () => {
-        axiosApiInstance.patch(`category/status/${id}`, { statusType }).then(
+        axiosApiInstance.patch(url, { statusType }).then(
             (response) => {
                 toast.success(response.data.msg);
                 router.refresh();
             }
         ).catch(
             (error) => {
-                toast.warning(error.data.msg)
+                console.log(error);
+                toast.warning(error.data.msg);
             }
         )
     }

@@ -84,17 +84,17 @@ export default async function AdminCategoryPage() {
                                     {/* Toggle Switches */}
                                     {/* <div className="flex items-center gap-6 mb-4"> */}
                                     <label className="flex items-center flex-wrap gap2 md:gap-2 cursor-pointer mb-4">
-                                        <StatusToggle id={cat._id} status={cat.status} statusType='status' />
-                                        <StatusToggle id={cat._id} status={cat.on_home} statusType='home' />
-                                        <StatusToggle id={cat._id} status={cat.is_best} statusType='best' />
-                                        <StatusToggle id={cat._id} status={cat.is_top} statusType='top' />
+                                        <StatusToggle url={`category/status/${cat._id}`} status={cat.status} statusType='status' />
+                                        <StatusToggle url={`category/status/${cat._id}`} status={cat.on_home} statusType='home' />
+                                        <StatusToggle url={`category/status/${cat._id}`} status={cat.is_best} statusType='best' />
+                                        <StatusToggle url={`category/status/${cat._id}`} status={cat.is_top} statusType='top' />
                                     </label>
                                     {/* </div> */}
 
                                     {/* Action Icons */}
                                     <div className="flex justify-end items-center gap-3">
                                         <Link href={`/admin/category/edit/${cat._id}`} className="text-blue-600 hover:text-blue-800 transition hover:cursor-pointer"><FaEdit /></Link>
-                                        <DeleteData id={cat._id} />
+                                        <DeleteData url={`category/delete/${cat._id}`} />
                                         {/* <button className="text-gray-600 hover:text-gray-800 transition"><FaEye /></button> */}
                                     </div>
                                 </div>

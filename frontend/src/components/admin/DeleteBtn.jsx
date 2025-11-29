@@ -1,13 +1,12 @@
 'use client'
-
 import { axiosApiInstance } from '@/helper/helper';
 import { useRouter } from 'next/navigation';
 import React from 'react'
-import { FaTrash } from "react-icons/fa";
+import { FiTrash2 } from "react-icons/fi";
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
-export default function DeleteData({ id }) {
+export default function DeleteData({ url }) {
     const router = useRouter();
 
     const deleteHandler = () => {
@@ -28,7 +27,7 @@ export default function DeleteData({ id }) {
                     icon: "success"
                 });
 
-                axiosApiInstance.delete(`category/delete/${id}`).then(
+                axiosApiInstance.delete(url).then(
                     (response) => {
                         if (response.data.flag == 1) {
                             router.refresh();
@@ -48,6 +47,6 @@ export default function DeleteData({ id }) {
 
     return (
         <button onClick={deleteHandler}
-            className="text-red-600 hover:text-red-800 transition hover:cursor-pointer"><FaTrash /></button>
+            className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:cursor-pointer"><FiTrash2 /></button>
     )
 }

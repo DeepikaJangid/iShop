@@ -22,7 +22,7 @@ CategoryRouter.post(
 )
 
 CategoryRouter.patch(
-    "/status/:id", //use questio (:id?) mark if id is optional, but for status to update, here id is mandatory
+    "/status/:id", //use question (:id?) mark if id is optional, but for status to update, here id is mandatory
     setStatus
 )
 

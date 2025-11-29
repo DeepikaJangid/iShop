@@ -11,6 +11,10 @@ export default function AdminDashboard() {
                     <h1 className="text-4xl font-semibold text-gray-900 tracking-wide">Admin Dashboard</h1>
                     <p className="text-gray-600 mt-2">Your overview of products, orders, and sales.</p>
                 </div>
+
+                <img src="https://media.tenor.com/uQSzEsNIZkIAAAAm/blackpink-eating.webp" alt="" />
+                <img src="https://media1.tenor.com/m/UFpi4Wt4JRwAAAAd/awoo-cat-baby-cat.gif" className="h-[199px] w-[200px] rounded-full object-contain" alt="" />
+
                 <div className="flex items-center gap-6">
                     <Link href={"/admin"} className="bg-linear-to-r from-teal-500 to-teal-700 text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transition transform flex items-center hover:cursor-pointer">
                         <FaBox className="mr-2" /> Add Product
@@ -82,7 +86,7 @@ export default function AdminDashboard() {
                             {[1, 2, 3, 4, 5].map((order) => (
                                 <tr key={order} className="hover:bg-gray-50 transition duration-300">
                                     <td className="p-4 text-gray-700">#T100{order}</td>
-                                    <td className="p-4 text-gray-900">John Doe</td>
+                                    <td className="p-4 text-gray-900">Jennie</td>
                                     <td className="p-4 text-gray-700">Wireless Headphones</td>
                                     <td className="p-4 text-gray-700">$120</td>
                                     <td className="p-4">

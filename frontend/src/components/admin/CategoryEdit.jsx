@@ -6,7 +6,7 @@ import { FiTag as Tag, FiImage as ImageIcon, FiDroplet as Palette, FiCheck as Ch
 import { toast } from "react-toastify";
 
 export default function CategoryEdit({ category, imageURL }) {
-    //                                 category & imageURL dono aa rhe hai admin ke CategoryEdit component se
+    //                                 category & imageURL dono aa rhe hai admin ke Edit/[category_id] folder se
 
     // console.log(imageURL)
 

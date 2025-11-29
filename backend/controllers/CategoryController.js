@@ -21,6 +21,21 @@ const getData = async (req, res) => {
     }
 }
 
+const getDataById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const category = await CategoryModel.findById({ _id: id });
+        res.send({
+            msg: "Category Data",
+            flag: 1,
+            category,
+            imageURL: "http://localhost:5000/images/category/"
+        })
+    } catch (error) {
+        res.send(messages.catch_error);
+    }
+}
+
 const createData = async (req, res) => {
     try {
         // console.log(req.files.image);
@@ -107,21 +122,6 @@ const setStatus = async (req, res) => {
             res.send(messages.data_doesnot_exist);
         }
 
-    } catch (error) {
-        res.send(messages.catch_error);
-    }
-}
-
-const getDataById = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const category = await CategoryModel.findById({ _id: id });
-        res.send({
-            msg: "Category Data",
-            flag: 1,
-            category,
-            imageURL: "http://localhost:5000/images/category/"
-        })
     } catch (error) {
         res.send(messages.catch_error);
     }

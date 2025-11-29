@@ -1,79 +1,139 @@
-import React from "react";
+'use client'
+import { axiosApiInstance, slugGenerator } from "@/helper/helper";
+import React, { useRef } from "react";
 import { FiPlus, FiCopy } from "react-icons/fi";
+import { toast } from "react-toastify";
 
-export function AddColorForm() {
+export default function AddColor() {
+
+  const [color, setColor] = React.useState('#000000');
+
+  const colorNameRef = useRef();
+  const slugRef = useRef();
+
+  const createSlug = () => {
+    const slug = slugGenerator(colorNameRef.current.value)
+    slugRef.current.value = slug;
+  }
+
+  const colorChangeHandler = (event) => {
+    let userInputCode = event.target.value;
+    if (userInputCode[0] != '#') {
+      userInputCode = '#' + userInputCode;
+    }
+
+    if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(userInputCode)) {
+      setColor(userInputCode); // valid HEX → update state
+    } else {
+      setColor(userInputCode); // optional: allow typing incomplete hex
+    }
+  }
+
+  const hexCodeHandler = (event) => {
+    const selectHexColor = event.target.value;
+    setColor(selectHexColor);
+  }
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const data = {
+      color_name: colorNameRef.current.value,
+      color_slug: slugRef.current.value,
+      color_code: color,
+    }
+
+    axiosApiInstance.post('colors/create', data).then(
+      (response) => {
+        toast.success(response.data.msg);
+        if (response.data.flag == 1) {
+          colorNameRef.current.value = ''
+          slugRef.current.value = ''
+        }
+      }
+    ).catch(
+      (error) => {
+        toast.warning(error.data.msg);
+      }
+    )
+  }
+
   return (
-    <form className="max-w-2xl w-full bg-white border border-gray-100 shadow-lg rounded-2xl p-6">
+    <form className="w-full min-h-screen bg-white p-6">
 
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="md:flex md:flex-row flex-col space-y-3 md:space-y-0 items-start justify-between">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-800">Add New Color</h3>
-          <p className="mt-1 text-sm text-gray-500">Fill in the details to create a new color.</p>
+          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Add New Color</h3>
+          <p className="mt-1 text-gray-500 text-[12px] md:text-[14px] ">Fill in the details to create a new color.</p>
         </div>
 
-        <div className="flex gap-3">
-          <button type="button" className="px-3 py-1.5 border rounded-lg text-sm text-gray-700 hover:bg-gray-100">
-            Reset
-          </button>
-
-          <button type="button" className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg shadow">
-            <FiPlus /> Save
-          </button>
-        </div>
+        <button
+          onClick={submitHandler}
+          type="button" className="text-[12px] md:text-[14px] inline-flex items-center gap-2 bg-[#01A49E] text-white px-4 py-1.5 rounded-lg shadow hover:cursor-pointer font-bold">
+          <FiPlus className="font-bold" /> Save
+        </button>
       </div>
 
       {/* Inputs */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-[12px] md:text-[14px]">
 
         {/* Name */}
-        <label className="col-span-2 flex flex-col">
-          <span className="text-sm text-gray-600 font-medium">Color Name</span>
+        <label className="col-span-3 flex flex-col">
+          <span className="text-sm text-gray-600 font-medium text-[12px] md:text-[14px]">Color Name</span>
           <input
+            ref={colorNameRef}
+            onChange={createSlug}
             placeholder="e.g. Sky Blue"
-            className="mt-2 p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200"
+            className="w-full mt-2 p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 text-[12px] md:text-[14px] placeholder:text-[12px] placeholder:md:text-[14px] capitalize"
           />
-          <span className="text-xs text-gray-400 mt-1">Max 15 characters</span>
+          <span className="text-xs text-gray-400 mt-1 text-[10px] md:text-[12px]">Max 15 characters</span>
         </label>
 
-        {/* Status */}
-        <label className="flex flex-col">
-          <span className="text-sm text-gray-600 font-medium">Status</span>
-
-          <div className="mt-2 inline-flex items-center gap-3">
-            <div className="px-3 py-1 rounded-lg bg-green-100 border border-green-200 text-green-700 font-medium">
-              Active
-            </div>
-            <div className="px-3 py-1 rounded-lg bg-gray-100 border text-gray-600 font-medium">
-              Inactive
-            </div>
-          </div>
+        {/* Slug */}
+        <label className="col-span-3 flex flex-col">
+          <span className="text-sm text-gray-600 font-medium text-[12px] md:text-[14px] lowercase">Slug Name</span>
+          <input
+            ref={slugRef}
+            readOnly
+            placeholder="auto-generated-from-name"
+            className="w-full mt-2 p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 text-[12px] md:text-[14px] placeholder:text-[12px] placeholder:md:text-[14px]"
+          />
+          <span className="text-xs text-gray-400 mt-1 text-[10px] md:text-[12px]">Max 15 characters</span>
         </label>
 
         {/* Color Code */}
         <label className="col-span-3 flex flex-col">
-          <span className="text-sm text-gray-600 font-medium">Color Code (HEX)</span>
+          <span className="text-sm text-gray-600 font-medium text-[12px] md:text-[14px]">Color Code (HEX)</span>
 
           <div className="mt-2 flex gap-3 items-center">
             <input
+              value={color}
+              onChange={colorChangeHandler}
+              onFocus={() => setColor('')}
               placeholder="#AABBCC"
-              className="flex-1 p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200"
+              className="w-full flex-1 p-3 rounded-lg border border-gray-200 text-gray-500 focus:ring-2 focus:ring-indigo-200 placeholder:text-[12px] placeholder:md:text-[14px] text-[12px] md:text-[14px]"
             />
 
-            <button
+            {/* <button
               type="button"
-              className="flex items-center gap-2 px-3 py-2 border rounded-lg text-sm"
+              className="flex items-center gap-2 px-3 py-2 shadow-2xl rounded-lg text-sm text-[12px] md:text-[14px] hover:cursor-pointer"
             >
               <FiCopy /> Copy
-            </button>
+            </button> */}
+            {/* copy button */}
 
-            <div className="w-12 h-12 border rounded-lg bg-gradient-to-br from-gray-100 to-gray-200" />
+            <input
+              type="color"
+              value={color}
+              onChange={hexCodeHandler}
+              className="shadow-2xl h-10 rounded-2xl hover:rounded-none transition-all duration-200 hover:cursor-pointer" />
           </div>
         </label>
       </div>
 
       {/* Suggestions */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <span className="text-sm text-gray-600 font-medium">Quick Suggestions</span>
 
         <div className="mt-2 flex gap-3 flex-wrap">
@@ -103,7 +163,7 @@ export function AddColorForm() {
           </div>
 
         </div>
-      </div>
+      </div> */}
     </form>
   );
 }
