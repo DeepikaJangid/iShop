@@ -22,7 +22,6 @@ export default function StatusToggle({ status, statusType, url }) {
             }
         ).catch(
             (error) => {
-                console.log(error);
                 toast.warning(error.data.msg);
             }
         )
@@ -31,7 +30,7 @@ export default function StatusToggle({ status, statusType, url }) {
     return (
         <>
             <button onClick={statusToggler}
-                className={`px-3 py-1 text-sm font-medium rounded-full hover:cursor-pointer ${status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-600'}`}
+                className={`px-3 py-1 text-xs rounded-full hover:cursor-pointer font-medium ${status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-600'}`}
             >
                 {getText()}
             </button>

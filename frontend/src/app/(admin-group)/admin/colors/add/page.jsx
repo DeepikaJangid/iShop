@@ -1,7 +1,8 @@
 'use client'
 import { axiosApiInstance, slugGenerator } from "@/helper/helper";
+import Link from "next/link";
 import React, { useRef } from "react";
-import { FiPlus, FiCopy } from "react-icons/fi";
+import { FiPlus, FiCopy, FiChevronLeft } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 export default function AddColor() {
@@ -63,9 +64,16 @@ export default function AddColor() {
 
       {/* Header */}
       <div className="md:flex md:flex-row flex-col space-y-3 md:space-y-0 items-start justify-between">
-        <div>
-          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Add New Color</h3>
-          <p className="mt-1 text-gray-500 text-[12px] md:text-[14px] ">Fill in the details to create a new color.</p>
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
+          <Link
+            href={'/admin/colors'}
+            className="p-2 rounded-lg bg-white border border-slate-200 shadow-sm active:bg-gray-200">
+            <FiChevronLeft className="w-5 h-5 text-slate-600" />
+          </Link>
+          <div>
+            <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Add New Color</h3>
+            <p className="mt-1 text-gray-500 text-[12px] md:text-[14px] ">Fill in the details to create a new color.</p>
+          </div>
         </div>
 
         <button
@@ -73,6 +81,7 @@ export default function AddColor() {
           type="button" className="text-[12px] md:text-[14px] inline-flex items-center gap-2 bg-[#01A49E] text-white px-4 py-1.5 rounded-lg shadow hover:cursor-pointer font-bold">
           <FiPlus className="font-bold" /> Save
         </button>
+
       </div>
 
       {/* Inputs */}

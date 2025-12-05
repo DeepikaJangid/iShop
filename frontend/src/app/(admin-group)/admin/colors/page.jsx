@@ -1,5 +1,5 @@
 import React from "react";
-import { FiSearch, FiFilter, FiPlus, FiDownload, FiUpload, FiGrid, FiList, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiSearch, FiFilter, FiPlus, FiDownload, FiUpload, FiGrid, FiList, FiEdit2, FiTrash2, FiChevronLeft } from "react-icons/fi";
 import Link from "next/link";
 import { getColors } from "@/api-calls/colors";
 import StatusToggle from "@/components/admin/StatusToggle";
@@ -15,26 +15,34 @@ export default async function ModernColorPage() {
 
                 {/* TOP BAR */}
                 <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Colors</h1>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Curate the palette for your catalog — upload swatches or add refined shades.
-                        </p>
-                    </div>
+                    <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                        <Link
+                            href={'/admin/'}
+                            className="p-2 rounded-lg bg-white border border-slate-200 shadow-sm active:bg-gray-200">
+                            <FiChevronLeft className="w-5 h-5 text-slate-600" />
+                        </Link>
 
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-                            <FiSearch className="text-gray-400" />
-                            <input className="w-56 text-sm outline-none placeholder-gray-400" placeholder="Search colors or hex" />
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Colors</h1>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Curate the palette for your catalog — upload swatches or add refined shades.
+                            </p>
                         </div>
 
-                        <button className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm hover:shadow">
-                            <FiFilter /> Filters
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                                <FiSearch className="text-gray-400" />
+                                <input className="w-56 text-sm outline-none placeholder-gray-400" placeholder="Search colors or hex" />
+                            </div>
 
-                        <Link href={"/admin/colors/add"} className="inline-flex items-center gap-2 bg-[#01A49E] text-white px-4 py-2 rounded-lg hover:cursor-pointer shadow font-bold">
-                            <FiPlus className="font-bold" /> Add Color
-                        </Link>
+                            <button className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm hover:shadow">
+                                <FiFilter /> Filters
+                            </button>
+
+                            <Link href={"/admin/colors/add"} className="inline-flex items-center gap-2 bg-[#01A49E] text-white px-4 py-2 rounded-lg hover:cursor-pointer shadow font-bold">
+                                <FiPlus className="font-bold" /> Add Color
+                            </Link>
+                        </div>
                     </div>
                 </header>
 

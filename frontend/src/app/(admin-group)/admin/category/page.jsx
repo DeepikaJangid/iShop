@@ -1,9 +1,15 @@
 // 'use client';
 import { getCategories } from "@/api-calls/category";
+import { FiChevronLeft } from "react-icons/fi";
 import { FaPlus, FaSearch, FaEdit, FaTrash, FaEye, FaTag } from "react-icons/fa";
 import StatusToggle from "@/components/admin/StatusToggle";
 import Link from "next/link";
 import DeleteData from "@/components/admin/DeleteBtn";
+
+export const metadata = {
+    title: "Category Page - iSHop",
+    description: "Category Page - Swoo Tech Mart",
+};
 
 export default async function AdminCategoryPage() {
     const categoriesDataJSON = await getCategories();
@@ -34,9 +40,16 @@ export default async function AdminCategoryPage() {
 
             {/* Header + Add Button */}
             <div className="flex-col md:flex md:flex-row justify-between items-center mb-8">
-                <div className="">
-                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Manage Categories</h1>
-                    <p className="text-gray-500">Quickly update, feature, or toggle your categories in one place.</p>
+                <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                    <Link
+                        href={'/admin/'}
+                        className="p-2 rounded-lg bg-white border border-slate-200 shadow-sm active:bg-gray-200">
+                        <FiChevronLeft className="w-5 h-5 text-slate-600" />
+                    </Link>
+                    <div className="">
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Manage Categories</h1>
+                        <p className="text-gray-500">Quickly update, feature, or toggle your categories in one place.</p>
+                    </div>
                 </div>
                 <Link href={'/admin/category/add'}
                     className="flex items-center gap-2 bg-linear-to-r from-[#01A49E] to-[#00C9B7] text-white px-6 py-3 rounded-full shadow-lg hover:cursor-pointer hover:from-[#00C9B7] hover:to-[#01A49E] transition transform hover:-translate-y-1 mt-3 md:mt-0">
@@ -58,7 +71,7 @@ export default async function AdminCategoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 {
-                    categoriesData.map(
+                    categoriesData?.map(
                         (cat) => {
                             return (
                                 <div key={cat._id} className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition transform hover:-translate-y-1">
@@ -95,7 +108,6 @@ export default async function AdminCategoryPage() {
                                     <div className="flex justify-end items-center gap-3">
                                         <Link href={`/admin/category/edit/${cat._id}`} className="text-blue-600 hover:text-blue-800 transition hover:cursor-pointer"><FaEdit /></Link>
                                         <DeleteData url={`category/delete/${cat._id}`} />
-                                        {/* <button className="text-gray-600 hover:text-gray-800 transition"><FaEye /></button> */}
                                     </div>
                                 </div>
                             )

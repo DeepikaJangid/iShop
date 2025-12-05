@@ -41,7 +41,7 @@ const createData = async (req, res) => {
         // console.log(req.files.image);
         // without npm i express-fileupload middleware you will only undefined instead of data. the solution is imported in category-route.js cuz the package will only be used for create api. FileUpload is used in the middle of "/create" path and createData function.
 
-        const imageFile = req.files.category_image;
+        const imageFile = req.files.category_image; //image name input type=file mein image lene wala jo input hai uska naam image hai isliye image name use hua hai yaha par
 
         // return
         const { category_name, category_slug } = req.body; //file (image) req.body mein nahi aati instead, req.files mein aati hai
@@ -82,7 +82,7 @@ const setStatus = async (req, res) => {
     try {
         const objKey = {}; //blank object key
         const statusType = req.body.statusType;
-        const id = (req.params.id);
+        const id = req.params.id;
         const categoryExists = await CategoryModel.findById(id)
         if (categoryExists) {
 
@@ -130,9 +130,7 @@ const setStatus = async (req, res) => {
 const deleteData = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const categoryExists = await CategoryModel.findOne({ _id: id });
-        // console.log(categoryExists.image_name);
         if (!categoryExists) {
             res.send(messages.data_doesnot_exist);
         }

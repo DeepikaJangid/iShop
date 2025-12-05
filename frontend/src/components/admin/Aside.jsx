@@ -1,6 +1,7 @@
 'use client'
 import { MdInvertColors } from "react-icons/md";
-import { FaTachometerAlt, FaBoxOpen, FaShoppingCart, FaUsers, FaChartLine, FaCog, FaTags } from "react-icons/fa";
+import { FaTachometerAlt, FaBoxOpen, FaShoppingCart, FaUsers, FaChartLine, FaCog, FaTags, } from "react-icons/fa";
+import { HiOutlineCollection } from "react-icons/hi"
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,7 @@ export default function AdminSidebar() {
         { label: "Dashboard", icon: <FaTachometerAlt />, path: "/admin" },
         { label: "Categories", icon: <FaTags />, path: "/admin/category" },
         { label: "Colors", icon: <MdInvertColors />, path: "/admin/colors" },
+        { label: "Brands", icon: <HiOutlineCollection />, path: "/admin/brand" },
         { label: "Products", icon: <FaBoxOpen />, path: "/admin/products" },
         { label: "Orders", icon: <FaShoppingCart />, path: "/admin/orders" },
         { label: "Users", icon: <FaUsers />, path: "/admin/users" },

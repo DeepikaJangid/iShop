@@ -1,8 +1,9 @@
 "use client";
 import { axiosApiInstance, slugGenerator } from "@/helper/helper";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
-import { FiTag as Tag, FiImage as ImageIcon, FiDroplet as Palette, FiCheck as Check, FiX as X } from "react-icons/fi";
+import { FiTag as Tag, FiImage as ImageIcon, FiDroplet as Palette, FiCheck as Check, FiX as X, FiChevronLeft } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 export default function CategoryEdit({ category, imageURL }) {
@@ -14,18 +15,15 @@ export default function CategoryEdit({ category, imageURL }) {
 
     const categoryRef = useRef(); //userRef -> reference hook
     const slugRef = useRef(); //create outside the submitHandler
-    const router = useRouter();
     const imageRef = useRef();
+    const router = useRouter();
 
 
     const imageChangeHandler = () => {
         const file = imageRef.current.files[0];
-        // console.log(file);
-        console.log(imageURL);
         if (file) {
             const imagePreviewUrl = URL.createObjectURL(file);
             setSelectedImage(imagePreviewUrl);
-            console.log(imagePreviewUrl);
         }
     };
 
@@ -77,15 +75,18 @@ export default function CategoryEdit({ category, imageURL }) {
         <div className="min-h-screen bg-gray-50 p-6 sm:p-10">
             <div className="max-w-5xl mx-auto">
                 <header className="flex items-start justify-between gap-4 mb-8">
-                    <div>
-                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Edit Category</h1>
-                        <p className="mt-1 text-sm text-slate-500">Create a category ready for production — accessible, SEO-friendly and beautiful.</p>
+                    <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                        <Link
+                            href={'/admin/category'}
+                            className="p-2 rounded-lg bg-white border border-slate-200 shadow-sm active:bg-gray-200">
+                            <FiChevronLeft className="w-5 h-5 text-slate-600" />
+                        </Link>
+                        <div>
+                            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Edit Category</h1>
+                            <p className="mt-1 text-sm text-slate-500">Create a category ready for production — accessible, SEO-friendly and beautiful.</p>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <button className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-300">Preview</button>
-                        <div className="rounded-full bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow">Draft</div>
-                    </div>
                 </header>
 
                 <form

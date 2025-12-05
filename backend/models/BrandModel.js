@@ -1,20 +1,27 @@
 const mongoose = require('mongoose');
 
-const CategorySchema = new mongoose.Schema(
+const BrandSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             max: 50,
-            required: true
+            required: true,
         },
         slug: {
             type: String,
+            max: 70,
             required: true,
-            unique: true
+            unique: true,
+        },
+        description: {
+            type: String,
+        },
+        owner: {
+            type: String,
         },
         image_name: {
             type: String,
-            unique: true
+            unique: true,
         },
         on_home: {
             type: Boolean,
@@ -38,7 +45,6 @@ const CategorySchema = new mongoose.Schema(
     }
 )
 
-const CategoryModel = mongoose.model("Category", CategorySchema);
-//                         name of mongoose model, schema
+const BrandModel = mongoose.model("Brand", BrandSchema);
 
-module.exports = CategoryModel;
+module.exports = BrandModel;

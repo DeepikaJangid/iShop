@@ -1,8 +1,9 @@
 'use client'
 import { axiosApiInstance, slugGenerator } from "@/helper/helper";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
-import { FiPlus, FiCopy, FiSave } from "react-icons/fi";
+import { FiChevronLeft, FiPlus, FiCopy, FiSave } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 export default function ColorEdit({ colorData }) {
@@ -16,8 +17,6 @@ export default function ColorEdit({ colorData }) {
         const slug = slugGenerator(colorNameRef.current.value)
         slugRef.current.value = slug;
     }
-
-
 
     const submitHandler = (event) => {
         event.preventDefault();
@@ -49,11 +48,19 @@ export default function ColorEdit({ colorData }) {
 
             {/* Header */}
             <div className="md:flex md:flex-row flex-col space-y-3 md:space-y-0 items-start justify-between">
-                <div>
-                    <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Edit Color</h3>
-                    <p className="mt-1 text-gray-500 text-[12px] md:text-[14px] ">Fill in the details to update the color.</p>
-                </div>
 
+                <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                    <Link
+                        href={'/admin/colors'}
+                        className="p-2 rounded-lg bg-white border border-slate-200 shadow-sm active:bg-gray-200">
+                        <FiChevronLeft className="w-5 h-5 text-slate-600" />
+                    </Link>
+
+                    <div>
+                        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">Edit Color</h3>
+                        <p className="mt-1 text-gray-500 text-[12px] md:text-[14px] ">Fill in the details to update the color.</p>
+                    </div>
+                </div>
 
                 <button
                     onClick={submitHandler}
