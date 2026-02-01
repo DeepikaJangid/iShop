@@ -2,18 +2,53 @@ const messages = require("../messages");
 const CategoryModel = require("../models/CategoryModel");
 const { generateUniqueImageName } = require('../helper/helper');
 const fs = require('fs'); //fs = fileststem (for deletion of image cause delete won't delete the image instead will only delete the data not the image)
+const ProductModel = require('../models/ProductModel');
 
 
 // TRY AND CATCH -> EXCEPTION HANDLING (REQUIRES AWAIT AND ASYNC FOR ASYNC CODE)
 // THEN AND CTACH -> PROMISE HANDLING
 
 const getData = async (req, res) => {
+    const query = req.query;
+    const dynamicQuery = {};
+
+    if (query.id) {
+        dynamicQuery._id = query.id;
+    }
+    if (query.slug) {
+        dynamicQuery.slug = query.slug;
+    }
+    if (query.home) {
+        dynamicQuery.on_home = query.home === "true" ? true : false;
+    }
+    if (query.best) {
+        dynamicQuery.is_best = query.best === "true" ? true : false;
+    }
+    if (query.top) {
+        dynamicQuery.is_top = query.top === "true" ? true : false;
+    }
+    if (query.status) {
+        dynamicQuery.status = query.status === "true" ? true : false;
+    }
+
     try {
-        const categories = await CategoryModel.find();
+        const categories = await CategoryModel.find(dynamicQuery).limit(
+            (query.limit) != null ? query.limit : 0
+        );
+
+        const finalCategory = []; //konsi particular cateogry ke kitne products hai woh ismein show hoga
+        for (let category of categories) {
+            const productCount = await ProductModel.find({ category_id: category._id, status: true }).countDocuments(); //particular category ke kitne products hai usse product count mein assign krdo
+            finalCategory.push({
+                ...category.toJSON(),
+                productCount
+            })
+        }
+
         res.send({
             msg: "All the Categories",
             flag: 1,
-            categories,
+            categories: finalCategory,
             imageURL: "http://localhost:5000/images/category/"
         })
     } catch (error) {

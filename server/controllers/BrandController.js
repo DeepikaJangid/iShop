@@ -2,14 +2,47 @@ const { generateUniqueImageName } = require('../helper/helper');
 const messages = require('../messages');
 const BrandModel = require('../models/BrandModel');
 const fs = require('fs')
+const ProductModel = require('../models/ProductModel');
 
 const getData = async (req, res) => {
+    const query = req.query;
+    const filterQuery = {};
+
+    if (query.id) {
+        filterQuery._id = query.id;
+    }
+    if (query.slug) {
+        filterQuery.slug = query.slug;
+    }
+    if (query.home) {
+        filterQuery.on_home = query.home === "true" ? true : false;
+    }
+    if (query.best) {
+        filterQuery.is_best = query.best === "true" ? true : false;
+    }
+    if (query.top) {
+        filterQuery.is_top = query.top === "true" ? true : false;
+    }
+    if (query.status) {
+        filterQuery.status = query.status === "true" ? true : false;
+    }
+
     try {
-        const brands = await BrandModel.find();
+        const brands = await BrandModel.find(filterQuery).limit(query.limit ? Number(query.limit) : 0);
+
+        const finalBrands = []; //konsi particular brand ke kitne products hai woh ismein show hoga
+        for (let brand of brands) {
+            const productCount = await ProductModel.find({ brand_id: brand._id, status: true }).countDocuments(); //particular brand ke kitne products hai use product count mein assign krdo
+            finalBrands.push({
+                ...brand.toJSON(),
+                productCount
+            })
+        }
+
         res.send({
             msg: "All the Brands",
             flag: 1,
-            brands,
+            brands: finalBrands,
             imageURL: "http://localhost:5000/images/brand/"
         })
     } catch (error) {

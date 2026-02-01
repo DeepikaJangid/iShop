@@ -3,8 +3,8 @@ import { FaUserAlt } from "react-icons/fa";
 
 export default function Header() {
   return (
-    <header className="w-full bg-white border-b border-gray-200 shadow-sm">
-      <section className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between sticky top-0">
+    <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0">
+      <section className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo / Brand */}
         <Link href='/' className="flex items-center gap-x-2 lg:gap-x-3">
           <div className='bg-[#01A49E] h-[35px] w-10 md:h-[49px] md:w-[55px] pb-1 flex items-center justify-center rounded-full'>

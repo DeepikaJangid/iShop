@@ -40,25 +40,25 @@ import Aside from "@/components/admin/Aside";
 
 export default function AdminLayout({ children }) {
     return (
-        <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <div className="min-h-screen bg-gray-100 flex flex-col">
-                    <Header />
+        // <html lang="en">
+        //     <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        //     >
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+            <Header />
 
-                    <div className="flex flex-1">
+            <div className="flex flex-1">
 
-                        {/* SIDEBAR */}
+                {/* SIDEBAR */}
 
-                        <Aside />
-                        {/* MAIN CONTENT */}
-                        <main className="flex-1">{children}</main>
-                    </div>
+                <Aside />
+                {/* MAIN CONTENT */}
+                <main className="flex-1">{children}</main>
+            </div>
 
-                    {/* FOOTER */}
-                    <Footer />
-                </div>
-            </body>
-        </html>
+            {/* FOOTER */}
+            <Footer />
+        </div>
+        //     </body>
+        // </html>
     );
 }

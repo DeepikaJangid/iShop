@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "concurrently": "^9.2.1"
   }
 }

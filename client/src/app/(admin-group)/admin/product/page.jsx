@@ -12,6 +12,7 @@ export const metadata = {
   description: "Product Page - Swoo Tech Mart",
 };
 
+
 export default async function ProductPage() {
   const productsDataJSON = await getProducts();
   const productData = productsDataJSON.products;
@@ -138,7 +139,7 @@ export default async function ProductPage() {
                           className="h-12 w-auto rounded-lg bg-gray-200"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">{prod.name}</p>
+                          <p className="font-medium text-gray-900">{prod?.name}</p>
                           <p className="text-xs text-gray-500">{prod.slug}</p>
                         </div>
                       </div>
@@ -156,7 +157,7 @@ export default async function ProductPage() {
                         ></p>
                       ))}
                     </td>
-                    <td className="px-5 py-4 text-gray-600">{prod?.brand_id.name}</td>
+                    <td className="px-5 py-4 text-gray-600">{prod?.brand_id?.name}</td>
 
                     <td className="px-5 py-4">
                       <del className="font-medium text-gray-600">₹{prod?.original_price}</del>

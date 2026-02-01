@@ -40,8 +40,8 @@ export default function AddProductPage() {
     const finalPriceRef = useRef();
 
     const fetchOtherData = async () => {
-        const categoryJSON = await getCategories();
-        const brandJSON = await getBrands();
+        const categoryJSON = await getCategories({ status: true });
+        const brandJSON = await getBrands({ status: true });
         const colorJSON = await getColors();
         setCategoryData(categoryJSON.categories);
         setBrandData(brandJSON.brands);

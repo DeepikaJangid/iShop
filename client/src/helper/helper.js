@@ -13,4 +13,9 @@ const axiosApiInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
 });
 
-export { slugGenerator, axiosApiInstance }
+function isValidPassword(password) {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+}
+
+export { slugGenerator, axiosApiInstance, isValidPassword }

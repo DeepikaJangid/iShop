@@ -1,6 +1,7 @@
 const messages = require('../messages');
 const ProductModel = require('../models/ProductModel');
 const { generateUniqueImageName } = require('../helper/helper');
+const CategoryModel = require('../models/CategoryModel');
 const fs = require('fs'); //fs = fileststem (for deletion of image cause delete won't delete the image instead will only delete the data not the image)
 
 // TRY AND CATCH -> EXCEPTION HANDLING (REQUIRES AWAIT AND ASYNC FOR ASYNC CODE)
@@ -8,7 +9,38 @@ const fs = require('fs'); //fs = fileststem (for deletion of image cause delete 
 
 const getData = async (req, res) => {
     try {
-        const products = await ProductModel.find().populate([
+        const query = req.query;
+        const dynamicQuery = {};
+
+        if (query.id !== undefined) {
+            dynamicQuery._id = query.id;
+        }
+        if (query.product_slug !== undefined) {
+            dynamicQuery.slug = query.product_slug;
+        }
+        if (query.home !== undefined) {
+            dynamicQuery.on_home = query.home === "true" ? true : false;
+        }
+        if (query.best !== undefined) {
+            dynamicQuery.is_best = query.best === "true" ? true : false;
+        }
+        if (query.top !== undefined) {
+            dynamicQuery.is_top = query.top === "true" ? true : false;
+        }
+        if (query.featured !== undefined) {
+            dynamicQuery.is_featured = query.featured === "true" ? true : false;
+        }
+        if (query.status !== undefined) {
+            dynamicQuery.status = query.status === "true" ? true : false;
+        }
+        if (query.category_slug !== undefined) {
+            const category = await CategoryModel.findOne({ slug: query.category_slug })
+            if (category) {
+                dynamicQuery.category_id = category._id;
+            }
+        }
+
+        const products = await ProductModel.find(dynamicQuery).populate([
             {
                 path: "category_id",
                 select: "name"
@@ -21,7 +53,8 @@ const getData = async (req, res) => {
                 path: "brand_id",
                 select: "name"
             }
-        ]);
+        ]).limit(query.limit ? parseInt(query.limit) : 0);
+        // query mein limit exist karti hai to integer banake daal do warna default zero limit hogi
         //populate - meaning jo bhi data is product ke module se linked hai unko ek jagah par leke aana
         res.send({
             msg: "All the Products",
@@ -128,7 +161,6 @@ const uploadOtherImages = async (req, res) => {
             const all_promises = imageFiles.map(
                 async (img) => {
                     const image_name = generateUniqueImageName(img.name);
-                    console.log(image_name);
                     const destination = "./public/images/product/other_images/" + image_name;
                     other_images_names.push(image_name);
                     await img.mv(destination);
@@ -161,9 +193,6 @@ const setStatus = async (req, res) => {
         const id = req.params.id;
         const productExists = await ProductModel.findById(id)
         if (productExists) {
-
-            console.log(productExists);
-
             if (statusType === "status") {
                 objKey.status = !productExists.status //objkey ke sath mein status,on_home is liye kyunki mongoose {name: value} aise data expect karta hai and productExists.status either true or false value dega to ( await ProductModel.findByIdAndUpdate()) ismein mongoose ko samjh aaye ki status hai ya on_home hai to saath mein name pass kiya hai.   
                 res.send({
@@ -277,7 +306,9 @@ const updateData = async (req, res) => {
         if (discount_percent) update.discount_percentage = discount_percent;
         if (final_price) update.final_price = final_price;
         if (category_id) update.category_id = category_id;
-        if (color_ids) update.color_ids = JSON.parse(color_ids);
+        if (color_ids && color_ids.length != 0) {
+            update.color_ids = JSON.parse(color_ids);
+        }
         if (brand_id) update.brand_id = brand_id;
 
         // console.log(update); output -> {product_name: '1', product_slu: '1'}

@@ -1,10 +1,40 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import { FaAngleDown } from "react-icons/fa6";
 import HamburgerMenu from './HamburgerMenu';
 import { IoMdCart } from "react-icons/io";
 import Link from 'next/link';
+import { getCategories } from "@/api-calls/category";
+import { useDispatch, useSelector } from 'react-redux';
+import { setData as setCategoryData } from '@/redux/reducers/CategoryReducer';
+import { lstoUser } from '@/redux/reducers/UserReducer';
+// import { setData as setCategoryData } from '../../redux/reducers/CategoryReducer';
+// as means alias --> alias mtlab ki is page par setData ko kis naam se jana jayega
 
 export default function Header() {
+  const dispatcher = useDispatch();
+  // const fetchCategory = async () => {
+  //   const categoriesDataJSON = await getCategories();
+  //   dispatcher(setCategoryData(
+  //     { data: categoriesDataJSON.categories, imageURL: categoriesDataJSON.imageURL }));
+  //   //set data ko dispatcher call karega //(data: categoriesDataJSON.categories) payload hai
+
+  // }
+
+  // useEffect(
+  //   () => {
+  //     fetchCategory();
+  //   }, []
+  // )
+
+  useEffect(
+    () => {
+      dispatcher(lstoUser());
+    }, []
+  )
+
+  const user = useSelector((state) => state.user.data);
+
   return (
     // data - aos= "fade-down"
     <section className='w-full bg-white sticky shadow-lg top-0 rounded-[10px] z-50' >
@@ -13,7 +43,7 @@ export default function Header() {
         <div className='hidden md:flex items-center justify-between'>
           <div>
             <span className='bg-[#EBEEF6] text-black rounded-md ps-8 py-2 pe-2 text-[12px] font-normal'>Hotline 24/7</span>
-            <span className='font-bold text-[12px] text-black ms-4'>(025) 3886 25 16</span>
+            <span className='font-bold text-[12px] text-black ms-4'>1234567890</span>
           </div>
           {/* upper left header */}
 
@@ -70,13 +100,20 @@ export default function Header() {
           </div>
           {/* lower header left */}
 
-          <div className='hidden md:flex md:gap-x-6 lg:gap-x-9 w-fit md:ms-6 lg:ms-0'>
+          <div className='hidden md:flex md:gap-x-6 lg:gap-x-9 w-fit md:ms-6 lg:ms-0 tracking-wide'>
 
-            <div className='uppercase tracking-wide'>
-              <p className='text-[11px] text-[#666666]'>welcome <br />
-                <Link href={"/login"} className='text-black hover:cursor-pointer font-bold text-[14px]'>log in / register</Link>
-              </p>
-            </div>
+            <p className='mt-1 flex flex-col text-[13px] font-semibold text-[#000000]'>{user !== null ? user.name : "Welcome"} <br />
+              {
+                user == null
+                  ?
+                  <Link href={"/register"} className='text-black hover:cursor-pointer font-bold text-[14px]'>Log In / Register</Link>
+                  :
+                  <button
+                    className='text-[12px] text-[#666666] hover:cursor-pointer ml-auto'>
+                    Logout
+                  </button>
+              }
+            </p>
             {/* login */}
 
             <div className='flex items-center gap-x-2'>
@@ -87,7 +124,7 @@ export default function Header() {
               </div>
               <div className='uppercase tracking-wide'>
                 <p className='text-[11px] text-[#666666]'>cart <br />
-                  <span className='text-black hover:cursor-pointer font-bold text-[14px]'>$1234.00</span>
+                  <span className='text-black hover:cursor-pointer font-bold text-[14px]'>₹1234.00</span>
                 </p>
               </div>
             </div>
@@ -95,16 +132,13 @@ export default function Header() {
 
           </div>
           {/* lower header right */}
+
+          <HamburgerMenu />
+          {/* menu toggle */}
+
         </div>
-
-
-        <HamburgerMenu />
-        {/* menu toggle */}
-
-
       </section >
       {/* inner header section */}
     </section >
-    // header section
   )
 }

@@ -1,128 +1,94 @@
 import React from 'react'
 import Card from '@/components/website/Card';
 import { FiSend } from "react-icons/fi";
-import { FaLaptop } from "react-icons/fa";
-import { RiComputerLine } from "react-icons/ri";
-import { CiMobile3, CiCamera } from "react-icons/ci";
-import { FaTabletScreenButton } from "react-icons/fa6";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { getCategories } from "@/api-calls/category";
+import { getBrands } from '@/api-calls/brand';
+import Link from 'next/link';
 
 export const metadata = {
   title: "Home Page - iSHop",
   description: "Home Page - Swoo Tech Mart",
 };
 
-const featuredBrands = [
-  {
-    id: 1,
-    img: "brands1.png",
-  },
-  {
-    id: 2,
-    img: "brands2.png",
-  },
-  {
-    id: 3,
-    img: "brands3.png",
-  },
-  {
-    id: 4,
-    img: "brands4.png",
-  },
-  {
-    id: 5,
-    img: "brands5.png",
-  },
-  {
-    id: 6,
-    img: "brands6.png",
-  },
-  {
-    id: 7,
-    img: "brands7.png",
-  },
-  {
-    id: 8,
-    img: "brands8.png",
-  },
-  {
-    id: 9,
-    img: "brands9.png",
-  },
-  {
-    id: 10,
-    img: "brands10.png",
-  },
-];
+// const featuredBrands = [
+//   {
+//     id: 1,
+//     img: "brands1.png",
+//   },
+//   {
+//     id: 2,
+//     img: "brands2.png",
+//   },
+//   {
+//     id: 3,
+//     img: "brands3.png",
+//   },
+//   {
+//     id: 4,
+//     img: "brands4.png",
+//   },
+//   {
+//     id: 5,
+//     img: "brands5.png",
+//   },
+//   {
+//     id: 6,
+//     img: "brands6.png",
+//   },
+//   {
+//     id: 7,
+//     img: "brands7.png",
+//   },
+//   {
+//     id: 8,
+//     img: "brands8.png",
+//   },
+//   {
+//     id: 9,
+//     img: "brands9.png",
+//   },
+//   {
+//     id: 10,
+//     img: "brands10.png",
+//   },
+// ];
 
-const devicesCategories = [
-  {
-    icon: <FaLaptop />,
-    name: "Laptops",
-    quantity: 1,
-  },
 
-  {
-    icon: <RiComputerLine />,
-    name: "PC & Computers",
-    quantity: 2,
-  },
+export default async function page() {
+  const baseQuery = { status: true };
+  const fetchCategories = (type, limit) => getCategories({
+    ...baseQuery,
+    [type]: true,
+    ...(limit > 0 && { limit })
+  });
+  const fetchBrands = (type, limit) => getBrands({
+    ...baseQuery,
+    [type]: true,
+    ...(limit > 0 && { limit })
+  });
+  const homeCategoryJSON = await fetchCategories("home", 5); //jiska home true hai and jiska status true hai woh show karwana hai
+  const topCategoryJSON = await fetchCategories("top", 4);
+  const bestBrandsJSON = await fetchBrands("best", 10);
 
-  {
-    icon: <CiMobile3 />,
-    name: "Cell Phones",
-    quantity: 3,
-  },
 
-  {
-    icon: <FaTabletScreenButton />,
-    name: "Tablets",
-    quantity: 4,
-  },
-
-  {
-    icon: <CiCamera />,
-    name: "Camera",
-    quantity: 5,
-  },
-];
-
-const topCategories = [
-  {
-    name: "Laptops",
-    img: "topcategories1.png",
-  },
-  {
-    name: "PC Gaming",
-    img: "topcategories2.png",
-  },
-  {
-    name: "Headphones",
-    img: "topcategories3.png",
-  },
-  {
-    name: "Monitors",
-    img: "topcategories4.png",
-  },
-];
-
-export default function page() {
   return (
     <>
       <section className='w-full rounded-[10px] my-4'>
-        <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row lg:space-x-5 space-y-5 items-center justify-center '>
-          <div className='border bg-white border-[#ECECEC] rounded-[15px] p-4 md:p-5 lg:p-7 '>
+        <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row lg:space-x-5 space-y-5 justify-center '>
+          <div className='border bg-white border-[#ECECEC] rounded-[15px] p-4 md:p-5 lg:p-7'>
             <h3 className='font-bold text-md md:text-lg lg:text-xl capitalize mb-5 text-black border-b border-[#ECECEC] pb-3.5'>category</h3>
             <ul className='list-none flex flex-col gap-4 md:mt-7'>
               {
-                devicesCategories.slice(0, 6).map(
+                homeCategoryJSON?.categories?.slice(0, 6).map(
                   (data, idx) => {
                     return (
                       <li key={idx} className='flex items-center justify-between border border-[#F2F3F4] rounded-[5px] lg:w-[236px] p-3 hover:cursor-pointer'>
-                        <span className='text-[#01A49E78] text-[24px]'>{data.icon}</span>
-                        {data.name}
-                        <span className='bg-[#01A49E78] h-6 w-6 rounded-full flex items-center justify-center text-[#253D4E] font-normal text-[11px] md:text-[12px]'>{data.quantity}
-                        </span>
+                        <img
+                          src={homeCategoryJSON.imageURL + data.image_name}
+                          className='text-[#01A49E78] text-[24px] h-7 w-9 object-fill' />
+                        <Link href={`/store/${data.slug}`} >{data.name}</Link>
+                        <span className='bg-[#01A49E78] h-6 w-6 rounded-full flex items-center justify-center text-white font-normal text-[11px] md:text-[13px]'>{data.productCount}</span>
                       </li>
                     )
                   }
@@ -135,7 +101,7 @@ export default function page() {
           <div className='hidden lg:flex rounded-[30px] border border-black w-[969px] h-[456px] overflow-hidden'>
             {/* <img className='object-cover w-full h-full' src="home-banner.png" /> */}
             <div className='relative bg-[url(/homebanner.png)] w-full h-full bg-(image: cover) text-white flex flex-col ps-4 sm:ps-6 md:ps-12 lg:ps-20 justify-center'>
-              <h1 className='text-[72px] font-bold leading-[72px] w-fit'>Don't miss amazing <br /> grocery deals</h1>
+              <h1 className='text-[72px] font-bold leading-[72px] w-fit'>Don't miss amazing <br /> deals</h1>
               <h3 className='text-[30px] font-normal w-fit mt-5 mb-4 md:mt-7 md:mb-9'>Sign up for the daily newsletter </h3>
               <div className='flex items-center border border-[#9A9A9A] rounded-full w-fit'>
                 <FiSend className='ms-4 md:ms-7 me-3 md:me-4 h-[22px] w-[22px]' />
@@ -150,28 +116,26 @@ export default function page() {
       {/* home category and banner section ends here */}
 
       <section className='w-full rounded-[10px] my-4'>
-        <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 items-center justify-center '>
-          <div className='bg-white rounded-[10px] p-3 md:p-5 lg:p-7'>
-            <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5 lg:mb-7'>
-              featured brands
-              <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+        <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 items-center'>
+          <div className='w-full bg-white rounded-[10px] p-3 md:py-5 md:px-7 '>
+            <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5'>
+              best brands
+              <Link href={"/store"}
+                className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
             </div>
             {/* <div className='flex justify-center sm:flex-col'> */}
-            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 md:gap-7 lg:gap-8'>
+            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 '>
               {
-                featuredBrands.slice(0, 5).map(
+                bestBrandsJSON?.brands?.map(
                   (data, _) => {
                     return (
-                      <img key={data.id} src={data.img} alt="" />
-                    )
-                  }
-                )
-              }
-              {
-                featuredBrands.slice(5).map(
-                  (data, idx) => {
-                    return (
-                      <img key={data.id} src={data.img} alt="" />
+                      <div key={data._id} className='flex flex-col items-center justify-center w-full'>
+                        <img
+                          src={bestBrandsJSON.imageURL + data.image_name}
+                          className='text-[#01A49E78] text-[24px] h-9 w-13 object-fill' />
+                        <Link href={`/store/brand/${data.slug}`}
+                          className='mt-1.5 text-[12px] md:text-[14px] font-medium'>{data.name}</Link>
+                      </div>
                     )
                   }
                 )
@@ -182,21 +146,23 @@ export default function page() {
           </div>
           {/* feature brands */}
 
-          <div className='bg-white rounded-[10px] p-3 md:p-5 lg:p-7'>
+          <div className='w-full lg:h-[210px] bg-white rounded-[10px] p-3 md:p-5 lg:p-7'>
             <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5 lg:mb-7'>
-              featured brands
-              <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+              top categories
+              <Link href={"/store"}
+                className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
             </div>
             <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7 lg:gap-8'>
               {
-                topCategories.map(
+                topCategoryJSON?.categories?.map(
                   (data, idx) => {
                     return (
-                      <div key={idx} className='flex flex-col items-center justify-center'>
-                        <div className='text-center'>
-                          <img src={data.img} alt="" className='h-[60px] w-[113px] object-contain' />
-                          <p className='mt-3.5 text-[12px] md:text-[14px] font-semibold'>{data.name}</p>
-                        </div>
+                      <div key={idx} className='flex flex-col items-center justify-center w-full'>
+                        <img
+                          src={topCategoryJSON.imageURL + data.image_name}
+                          className='text-[#01A49E78] text-[24px] h-15 w-18 object-fill' />
+                        <Link href={`/store/${data.slug}`}
+                          className='mt-3.5 text-[12px] md:text-[14px] font-semibold'>{data.name}</Link>
                       </div>
 
                     )
@@ -207,10 +173,10 @@ export default function page() {
           </div>
           {/* top categories */}
         </section>
-      </section>
+      </section >
       {/* feature brands and top categories section */}
 
-      <section className='w-full rounded-[10px] my-4'>
+      < section className='w-full rounded-[10px] my-4' >
         <section className='max-w-[1300px] mx-auto flex-col lg:space-x-5 space-y-5 items-center justify-center '>
 
           <section className='lg:flex lg:flex-row lg:justify-between'>
@@ -281,7 +247,8 @@ export default function page() {
                 <span className='font-normal text-[#666666]'>new in</span>
                 <span className='font-normal text-[#666666]'>popular</span>
               </div>
-              <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+              <Link href={"/store"}
+                className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
             </div>
             {/* best seller, new in, popular */}
 
@@ -303,12 +270,13 @@ export default function page() {
       </section >
       {/* deals of the day, pre order, best seller sectons */}
 
-      <section className='w-full my-4'>
+      < section className='w-full my-4' >
 
         <section className='max-w-[1300px] bg-white rounded-[10px] m-auto p-5 md:py-6 md:px-6 lg:px-9'>
           <div className='flex items-center justify-between'>
             <b className='font-semibold uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8'>top cellphones & tablets</b>
-            <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666]'>view all</span>
+            <Link href={"/store"}
+              className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
           </div>
           {/* top cellphones heading */}
 
@@ -380,15 +348,16 @@ export default function page() {
           {/* home top cellphones & tablets products */}
 
         </section>
-      </section>
+      </section >
       {/* home top cellphones & tablets */}
 
-      <section className='w-full my-4'>
+      < section className='w-full my-4' >
 
         <section className='max-w-[1300px] bg-white rounded-[10px] m-auto p-5 md:py-6 md:px-6 lg:px-9'>
           <div className='flex items-center justify-between'>
             <b className='font-semibold uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8'>best laptops & computers</b>
-            <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666]'>view all</span>
+            <Link href={"/store"}
+              className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
           </div>
           {/* best laptops heading */}
 
@@ -458,17 +427,18 @@ export default function page() {
           {/* home top cellphones & tablets products */}
 
         </section>
-      </section>
+      </section >
       {/* home best laptops & computers */}
 
-      <section className='w-full rounded-[10px] my-4'>
+      < section className='w-full rounded-[10px] my-4' >
         <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row lg:space-x-5 space-y-5 items-center justify-center '>
           <div className='md:flex md:flex-row flex-col items-center md:space-x-3 space-y-3 md:space-y-0'>
 
             <div className='bg-white rounded-[15px] p-4 md:p-5 lg:p-7'>
               <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5 lg:mb-7'>
                 audios & cameras
-                <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666]'>view all</span>
+                <Link href={"/store"}
+                  className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
               </div>
               <img className='pb-3 md:pb-4 lg:pb-6 max-h-[205px] w-full' src="speaker1.png" />
               <div className='grid sm:grid-cols-2 border-t border-[#99999955] pt-3 md:pt-4 lg:pt-6 space-y-2 md:space-y-4 lg:space-y-5'>
@@ -503,7 +473,8 @@ export default function page() {
             <div className='bg-white rounded-[15px] p-4 md:p-5 lg:p-7'>
               <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5 lg:mb-7'>
                 gaming
-                <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+                <Link href={"/store"}
+                  className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
               </div>
               <img className='pb-3 md:pb-4 lg:pb-6 max-h-[205px] w-full' src="speaker1.png" />
               <div className='grid sm:grid-cols-2 border-t border-[#99999955] pt-3 md:pt-4 lg:pt-6 space-y-2 md:space-y-4 lg:space-y-5'>
@@ -538,7 +509,8 @@ export default function page() {
             <div className='hidden md:block bg-white rounded-[15px] p-4 md:p-5 lg:p-7'>
               <div className='text-[14px] md:text-[16px] lg:text-[18px] uppercase font-bold flex items-center justify-between mb-3 md:mb-5 lg:mb-7'>
                 office equipements
-                <span className='text-[12px] md:text-[13px capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+                <Link href={"/store"}
+                  className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
               </div>
               <img className='pb-3 md:pb-4 lg:pb-6 max-h-[205px] w-full' src="speaker1.png" />
               <div className='grid sm:grid-cols-2 border-t border-[#99999955] pt-3 md:pt-4 lg:pt-6 space-y-2 md:space-y-4 lg:space-y-5'>
@@ -571,24 +543,25 @@ export default function page() {
             {/* office equipements div */}
           </div>
         </section>
-      </section>
+      </section >
       {/* audio & cameras, gaming, office equipements */}
 
-      <section className='w-full rounded-[10px] my-4'>
+      < section className='w-full rounded-[10px] my-4' >
         <section className='max-w-[1300px] mx-auto flex-col lg:flex lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 items-center justify-center '>
           {/* <div className='p-3 md:p-5 lg:p-7'> */}
           <img className='rounded-[10px] py-1.5 bg-[#01A49E]' src="chair.png" alt="" />
           <img className='rounded-[10px] ' src="mobile-on-stairs.png" alt="" />
           {/* </div> */}
         </section>
-      </section>
+      </section >
       {/* massage chair section */}
 
-      <section className='max-w-[1300px] mx-auto flex-col md:flex md:justify-around bg-white px-2 py-3 md:px-5 lg:px-10 md:py-7 lg:py-12 rounded-[10px]'>
+      < section className='max-w-[1300px] mx-auto flex-col md:flex md:justify-around bg-white px-2 py-3 md:px-5 lg:px-10 md:py-7 lg:py-12 rounded-[10px]' >
         <div className='flex items-center justify-between'>
           <div className='uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8 flex items-center'>
             <b className='font-semibold'>you recently viewed</b>
-            <span className='text-[12px] md:text-[13px] capitalize font-normal text-[#666666] hover:cursor-pointer'>view all</span>
+            <Link href={"/store"}
+              className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
           </div>
           <div className='flex items-center space-x-4 rounded-xl bg-[#EBEDF3]'>
             <MdKeyboardArrowLeft className=' text-lg sm:text-xl md:text-2xl lg:text-3xl hover:cursor-pointer hover:text-gray-500 ' />
@@ -652,10 +625,10 @@ export default function page() {
           </div>
         </div>
         {/* home best seller products */}
-      </section>
+      </section >
       {/* your recenetly viewed section */}
 
-      <section className='max-w-[1300px] mx-auto my-10 px-5 sm:px-4'>
+      < section className='max-w-[1300px] mx-auto my-10 px-5 sm:px-4' >
         <h3 className='font -bold text-[14px] md:text-[16px] lg:text-[18px]'>Swoo – #1 Online Marketplace for technology</h3>
         <p className='text-[#666666] font-normal  text-[12px] md:text-[14px] my-3 sm:my-4 md:my-5 lg:my-6'>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae posuere mi. Quisque iaculis dignissim scelerisque. Morbi condimentum sagittis leo vitae tempor.
@@ -668,8 +641,7 @@ export default function page() {
           maximus. Sed a lacus felis. Maecenas consectetur consequat orci scelerisque malesuada. Fusce vel orci eu tortor consequat mattis quis at ante. Class aptent taciti sociosqu ad litora
           torquent per conubi,
         </p>
-        <button className='text-[12px] md:text-[13px] font-normal capitalize hover:cursor-pointer'>view all</button>
-      </section>
+      </section >
 
 
 

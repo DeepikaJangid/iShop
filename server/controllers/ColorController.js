@@ -1,14 +1,25 @@
 const messages = require("../messages");
 const ColorModel = require("../models/ColorModel");
+const ProductModel = require("../models/ProductModel");
 
 const getData = async (req, res) => {
     try {
         const colors = await ColorModel.find();
+
+        const finalColors = []; //konsi particular brand ke kitne products hai woh ismein show hoga
+        for (let color of colors) {
+            const productCount = await ProductModel.find({ color_ids: color._id, status: true }).countDocuments(); //particular brand ke kitne products hai use product count mein assign krdo
+            finalColors.push({
+                ...color.toJSON(),
+                productCount
+            })
+        }
+
         res.send(
             {
                 msg: "Colors Data",
                 flag: 1,
-                colors,
+                colors: finalColors,
             }
         )
     } catch (error) {

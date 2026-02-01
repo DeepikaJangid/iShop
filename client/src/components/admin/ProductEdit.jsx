@@ -33,7 +33,7 @@ export default function EditProductPage({ product, imageURL }) {
     const [colorIds, setColorId] = useState([]);
     const [showDescription, setShowDescription] = useState(product.description);
 
-    console.log(mainImage)
+    // console.log(mainImage)
     useEffect(() => {
         if (product?.description) {
             setShowDescription(product.description);
@@ -120,7 +120,7 @@ export default function EditProductPage({ product, imageURL }) {
 
     const getFile = (files) => { //jo bhi image select hogi uski details fetch karne ke liye function
         setMainImage(files[0])
-        console.log(files)
+        // console.log(files)
     }
 
     const colorChangeHanlder = (options) => {
@@ -143,7 +143,10 @@ export default function EditProductPage({ product, imageURL }) {
         formData.append('final_price', finalPriceRef.current.value);
         formData.append('thumbnail', mainImage.file);
         formData.append('category_id', event.target.category_id.value);
-        formData.append('color_ids', JSON.stringify(colorIds)); //colorids ka array trabel nahi krta to stringfy krke send krna hai
+        if (colorIds.length > 0) {
+            formData.append('color_ids', JSON.stringify(colorIds)); //colorids ka array trabel nahi krta to stringfy krke send krna hai
+        }
+        // agar ids length 0 hai to color ko update nahi karna hai
         formData.append('brand_id', event.target.brand_id.value);
 
         axiosApiInstance.put("/product/update/" + product._id, formData).then(
