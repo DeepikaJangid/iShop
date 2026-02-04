@@ -3,9 +3,22 @@ import ProductListing from "@/components/website/ProductListing";
 import { getProducts } from "@/api-calls/product";
 import Card from "@/components/website/Card";
 
-export default async function Store({params, searchParams}) {
-
-    const productJSON = await getProducts({ status: true });
+export default async function Store({ params, searchParams }) {
+    const query = { status: true };
+    const urlSearchParams = await searchParams;
+    if (urlSearchParams.brand_ids) { //it's brand slug not ids.. same with color_slug
+        query.brand_ids = urlSearchParams.brand_ids;
+    }
+    if (urlSearchParams.color_ids) {
+        query.color_ids = urlSearchParams.color_ids;
+    }
+    if (urlSearchParams.sortby) {
+        query.sortby = urlSearchParams.sortby
+    }
+    if (urlSearchParams.limit) {
+        query.limit = urlSearchParams.limit
+    }
+    const productJSON = await getProducts(query);
     const allProducts = productJSON.products;
     const imageURL = productJSON.imageURL;
     const featuredProducts = allProducts.filter(prod => prod.is_featured == true);

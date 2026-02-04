@@ -17,6 +17,16 @@ export default function SideBar() {
     // gets the current path.. eg./store/laptop
 
     const [categories, setCategory] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [brandJSON, getBrandJSON] = useState({});
+    const [showAllColors, setShowAllColors] = useState(false); // For toggling the color visibility
+    const [showAllBrands, setShowAllBrands] = useState(false); // For toggling the brand visibility
+    // brands seachparam logic
+    const [brandIds, setBrandIds] = useState([]);
+    const [colorIds, setColorIds] = useState([]);
+
+
     const fetchData = async () => {
         const categoryJSON = await getCategories();
         const categoryData = categoryJSON.categories;
@@ -32,18 +42,8 @@ export default function SideBar() {
         const brandsJSON = await getBrands();
         getBrandJSON(brandsJSON);
     }
-    useEffect(
-        () => {
-            fetchData();
-        }, []
-    )
 
-    const [colors, setColors] = useState([]);
-    const [brands, setBrands] = useState([]);
-    const [brandJSON, getBrandJSON] = useState({});
-    const [showAllColors, setShowAllColors] = useState(false); // For toggling the color visibility
-    const [showAllBrands, setShowAllBrands] = useState(false); // For toggling the brand visibility
-
+    // toggle view more and show less visibility
     const handleViewAllColors = () => {
         setShowAllColors(!showAllColors); // Toggle visibility of all colors
     };
@@ -54,9 +54,6 @@ export default function SideBar() {
 
 
     // brands seachparam logic
-    const [brandIds, setBrandIds] = useState([]);
-    const [colorIds, setColorIds] = useState([]);
-
     useEffect(
         () => {
             setBrandIds([]);
@@ -81,16 +78,20 @@ export default function SideBar() {
             const query = new URLSearchParams(searchParams.toString());
             // It’s a built-in JavaScript helper that lets you read, add, remove, and change query parameters in a URL. Query parameters are the part after the ? in a URL: https://example.com?page=2&sort=name
             // brandIds.length != 0 && query.append('brand_ids', brandIds.join(',')) //array ko string mein covert kr diya join use krke. eg. id1%2Cid2%2Cid3... %2C means comma
-            query.delete('brand_slug') //if brand id jo select ho chuki hai woh query mein se hti nhi hai to use delete krdo
+            query.delete('brand_ids') //if brand id jo select ho chuki hai woh query mein se hti nhi hai to use delete krdo
             if (brandIds.length != 0) {
-                query.append('brand_slug', brandIds.join('-')) //array ko string mein covert kr diya join use krke. eg. id1-id2-id3
+                // join = array -> string
+                query.append('brand_ids', brandIds.join('_')) //array ko string mein covert kr diya join use krke. eg. id1-id2-id3
             }
-            query.delete('color_slug') //if brand id jo select ho chuki hai woh query mein se hti nhi hai to use delete krdo
+            query.delete('color_ids') //if brand id jo select ho chuki hai woh query mein se hti nhi hai to use delete krdo
             if (colorIds.length != 0) {
-                colorIds.length != 0 && query.append('color_slug', colorIds.join('-'))
+                colorIds.length != 0 && query.append('color_ids', colorIds.join('_'))
             }
             //                                      key name = colorIds        
-            router.push(`${pathname}?${query.toString()}`) //yeh upar url mein push kr dega query ko string mein convert krke
+
+            router.replace(`${pathname}?${query.toString()}`, { scroll: false })
+            // router.push(`${pathname}?${query.toString()}`) //refreshes the page on click of any filter instead of this use router.replace()
+            // yeh upar url mein push kr dega query ko string mein convert krke
             // eg. http://localhost:3000/store/laptop?brand_ids=692eb0c7b4c6173b7a466fc0&brand_ids=692eb0c7b4c6173b7a466fc0-692eb0a7b4c6173b7a466fbd
 
 
@@ -108,6 +109,21 @@ export default function SideBar() {
         }
         setColorIds(currentColorIds);
     }
+
+    useEffect(
+        () => {
+            fetchData();
+            if (searchParams.get('brand_ids')) {
+                const brandFilterIds = searchParams.get('brand_ids');
+                setBrandIds(brandFilterIds.split('_')); //string to array
+            }
+            if (searchParams.get('color_ids')) {
+                const colorFilterIds = searchParams.get('color_ids');
+                setColorIds(colorFilterIds.split('_')); //string to array
+            }
+            // this code is for when the user refreshes the page after selecting filters the checkbox's should stay ticked.
+        }, []
+    )
 
     return (
         <>

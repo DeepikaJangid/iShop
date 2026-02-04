@@ -4,7 +4,9 @@ import { FiSend } from "react-icons/fi";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { getCategories } from "@/api-calls/category";
 import { getBrands } from '@/api-calls/brand';
+import { getProducts } from '@/api-calls/product';
 import Link from 'next/link';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export const metadata = {
   title: "Home Page - iSHop",
@@ -67,10 +69,26 @@ export default async function page() {
     [type]: true,
     ...(limit > 0 && { limit })
   });
+  const fetchProducts = (type, limit) => getProducts({
+    ...baseQuery,
+    [type]: true,
+    ...(limit > 0 && { limit })
+  })
   const homeCategoryJSON = await fetchCategories("home", 5); //jiska home true hai and jiska status true hai woh show karwana hai
   const topCategoryJSON = await fetchCategories("top", 4);
   const bestBrandsJSON = await fetchBrands("best", 10);
-
+  const bestSellerProductsJSON = await fetchProducts("best", 5);
+  const bestProducts = bestSellerProductsJSON.products.filter(
+    (product) =>
+      product.is_best &&
+      (product.category_id.name === "Laptop" || product.category_id.name === "Computer")
+  );
+  const topProductsJSON = await fetchProducts("top", 20);
+  const topProducts = topProductsJSON.products.filter(
+    (product) =>
+      product.is_top &&
+      (product.category_id.name === "Mobile Phone" || product.category_id.name === "Tablet")
+  );
 
   return (
     <>
@@ -250,15 +268,24 @@ export default async function page() {
               <Link href={"/store"}
                 className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
             </div>
+
             {/* best seller, new in, popular */}
 
             <div className='flex items-center justify-center'>
-              <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 space-y-5 md:space-y-7 md:space-x-20'>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 w-full">
+                {bestSellerProductsJSON?.products?.map((product) => (
+                  <Card
+                    key={product._id}
+                    _id={product._id}
+                    is_best={product.is_best}
+                    imageURL={bestSellerProductsJSON.imageURL + 'main_images/' + product.thumbnail}
+                    name={product.name}
+                    final_price={product.final_price}
+                    original_price={product.original_price}
+                    discount_percentage={product.discount_percentage}
+                    stock={product.stock}
+                  />
+                ))}
               </div>
             </div>
             {/* home best seller products */}
@@ -270,8 +297,7 @@ export default async function page() {
       </section >
       {/* deals of the day, pre order, best seller sectons */}
 
-      < section className='w-full my-4' >
-
+      <section className='w-full my-4' >
         <section className='max-w-[1300px] bg-white rounded-[10px] m-auto p-5 md:py-6 md:px-6 lg:px-9'>
           <div className='flex items-center justify-between'>
             <b className='font-semibold uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8'>top cellphones & tablets</b>
@@ -284,65 +310,50 @@ export default async function page() {
             <img className='max-h-[200px] w-full object-cover lg:hidden rounded-[10px]' src="banner1.png" alt="" />
             <img className='hidden lg:flex max-h-[200px] max-w-[580px] object-contain' src="redmi-banner.png" alt="" />
             {/* <div className='grid sm:grid-cols-2 lg:grid-cols-3 grow pt-7'> */}
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 grow pt-7 mx-auto justify-items-center md:mx-0 lg:justify-items-start space-y-6'>
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
+            <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 grow pt-7 mx-auto justify-items-center md:mx-0 lg:justify-items-start space-y-6'>
+              {topProducts
+                .filter(p => p.category_id.name === "Tablet")
+                .slice(0, 6) // show maximum 6
+                .map((product) => (
+                  <div key={product._id} className='flex flex-col items-center max-w-[220px] text-center space-y-2'>
+                    <div className='h-[70px] w-[70px]'>
+                      <img
+                        className='h-full w-full object-cover'
+                        src={topProductsJSON.imageURL + 'main_images/' + product.thumbnail}
+                        alt={product.name}
+                      />
+                    </div>
+                    <b className='text-[12px] md:text-[14px] font-bold'>{product.name}</b>
+                    <span className="flex items-center gap-1 text-[12px] justify-center">
+                      <FaCheckCircle
+                        className={`${product.stock ? "bg-green-500" : "bg-red-500"} text-white rounded-full`}
+                      />
+                      {product.stock ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </div>
+                ))}
             </div>
             {/* top cellphones */}
           </div>
 
           <div className='flex items-center justify-center'>
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 space-y-5 md:space-y-7 md:space-x-20'>
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 w-full">
+              {topProducts
+                .filter(p => p.category_id.name === "Mobile Phone")
+                .slice(0, 5) // show maximum 5
+                .map((product) => (
+                  <Card
+                    key={product._id}
+                    _id={product._id}
+                    is_best={product.is_best}
+                    imageURL={topProductsJSON.imageURL + 'main_images/' + product.thumbnail}
+                    name={product.name}
+                    final_price={product.final_price}
+                    original_price={product.original_price}
+                    discount_percentage={product.discount_percentage}
+                    stock={product.stock}
+                  />
+                ))}
             </div>
           </div>
           {/* home top cellphones & tablets products */}
@@ -351,77 +362,63 @@ export default async function page() {
       </section >
       {/* home top cellphones & tablets */}
 
-      < section className='w-full my-4' >
-
+      <section className='w-full my-4' >
         <section className='max-w-[1300px] bg-white rounded-[10px] m-auto p-5 md:py-6 md:px-6 lg:px-9'>
           <div className='flex items-center justify-between'>
-            <b className='font-semibold uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8'>best laptops & computers</b>
+            <b className='font-semibold uppercase text-[14px] md:text-[16px] lg:text-[18px] space-x-3 md:space-x-6 lg:space-x-8'>best laptop & computers</b>
             <Link href={"/store"}
               className='text-[12px] md:text-[13px] capitalize font-normal text-blue-500 hover:cursor-pointer'>view all</Link>
           </div>
-          {/* best laptops heading */}
+          {/* top cellphones heading */}
 
           <div className='flex-col lg:flex lg:flex-row border-b border-[#99999944] pb-3 pt-4 md:pb-5 md:pt-6 lg:space-x-10'>
-            <img className='flex max-h-[200px] max-w-full object-contain' src="mac-banner.png" alt="" />
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 grow pt-7 mx-auto justify-items-center md:mx-0 lg:justify-items-start space-y-6'>
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
-
-              <div className='flex max-w-[220px] justify-between'>
-                <div className='flex flex-col py-0.5'>
-                  <b className='text-[12px] md:text-[14px] font-bold'>iPhone(ios)</b>
-                  <p className='text-[10px] md:text-[12px] font-normal text-[#666666]'>74 items</p>
-                </div>
-                <img className='h-[50px] w-[50px]' src="iphone(ios).png" />
-              </div>
+            <img className='max-h-[200px] w-full object-cover lg:hidden rounded-[10px]' src="banner1.png" alt="" />
+            <img className='hidden lg:flex max-h-[200px] max-w-[580px] object-contain' src="redmi-banner.png" alt="" />
+            {/* <div className='grid sm:grid-cols-2 lg:grid-cols-3 grow pt-7'> */}
+            <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 grow pt-7 mx-auto justify-items-center md:mx-0 lg:justify-items-start space-y-6'>
+              {bestProducts
+                .filter(p => p.category_id.name === "Laptop")
+                .slice(0, 6) // show maximum 6
+                .map((product) => (
+                  <div key={product._id} className='flex flex-col items-center max-w-[220px] text-center space-y-2'>
+                    <div className='h-[70px] w-[70px]'>
+                      <img
+                        className='h-full w-full object-cover'
+                        src={topProductsJSON.imageURL + 'main_images/' + product.thumbnail}
+                        alt={product.name}
+                      />
+                    </div>
+                    <b className='text-[12px] md:text-[14px] font-bold'>{product.name}</b>
+                    <span className="flex items-center gap-1 text-[12px] justify-center">
+                      <FaCheckCircle
+                        className={`${product.stock ? "bg-green-500" : "bg-red-500"} text-white rounded-full`}
+                      />
+                      {product.stock ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </div>
+                ))}
             </div>
             {/* top cellphones */}
           </div>
 
           <div className='flex items-center justify-center'>
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 space-y-5 md:space-y-7 md:space-x-20'>
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 py-3 md:pt-7 lg:py-8 w-full">
+              {bestProducts
+                .filter(p => p.category_id.name === "Computer")
+                .slice(0, 5) // show maximum 5
+                .map((product) => (
+                  <Card
+                    key={product._id}
+                    _id={product._id}
+                    is_best={product.is_best}
+                    imageURL={topProductsJSON.imageURL + 'main_images/' + product.thumbnail}
+                    name={product.name}
+                    final_price={product.final_price}
+                    original_price={product.original_price}
+                    discount_percentage={product.discount_percentage}
+                    stock={product.stock}
+                  />
+                ))}
             </div>
           </div>
           {/* home top cellphones & tablets products */}

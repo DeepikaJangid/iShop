@@ -3,20 +3,22 @@ import { FaCheckCircle } from "react-icons/fa";
 
 export default function Card({ _id, discount_percentage, imageURL, name, final_price, original_price, stock, is_best }) {
     return (
-        <div key={_id} className="relative flex flex-col w-[185px] mt-3 mb-2">
+        <div className="relative flex flex-col w-[185px] mt-3 mb-2">
             {is_best == true ? <div className="absolute w-fit left-0 right-0 bg-[#1ABA1A] text-white text-[10px] px-2 py-1 rounded uppercase">
                 best seller <br />
             </div> : null}
 
-            <img
-                src={imageURL}
-                alt={name}
-                className="object-contain max-h-[185px]"
-            />
+            <div className="w-full h-[185px] flex items-center justify-center">
+                <img
+                    src={imageURL}
+                    alt={name}
+                    className="max-h-full max-w-full object-contain"
+                />
+            </div>
 
             <span className="text-center text-[#666666] text-[12px]">(1)</span>
 
-            <span className="font-bold text-[13px] md:text-[14px] mt-2">
+            <span className="font-bold text-[13px] md:text-[14px] mt-2 line-clamp-2 min-h-9">
                 {name}
             </span>
 

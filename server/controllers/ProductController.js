@@ -2,7 +2,9 @@ const messages = require('../messages');
 const ProductModel = require('../models/ProductModel');
 const { generateUniqueImageName } = require('../helper/helper');
 const CategoryModel = require('../models/CategoryModel');
-const fs = require('fs'); //fs = fileststem (for deletion of image cause delete won't delete the image instead will only delete the data not the image)
+const ColorModel = require('../models/ColorModel');
+const BrandModel = require('../models/BrandModel');
+const fs = require('fs'); //fs = filestem (for deletion of image cause delete won't delete the image instead will only delete the data not the image)
 
 // TRY AND CATCH -> EXCEPTION HANDLING (REQUIRES AWAIT AND ASYNC FOR ASYNC CODE)
 // THEN AND CTACH -> PROMISE HANDLING
@@ -33,10 +35,49 @@ const getData = async (req, res) => {
         if (query.status !== undefined) {
             dynamicQuery.status = query.status === "true" ? true : false;
         }
+        if (query.color_ids !== undefined) {
+            const colorSlugs = query.color_ids.split("_") // split = string -> array
+            const colors = await ColorModel.find({ slug: { $in: colorSlugs } }).select("_id name");
+            const colorIds = colors.map(c => c._id);
+            // in => Give me all colors from the database whose slug is in the list colorSlugs
+            dynamicQuery.color_ids = { //har product ke color mein ek array hai and dynamicQuery bhi array hai to yaha array ko array se match karwao
+                $in: colorIds // jo bhi colorIds/slug aaye hai un colors mein jo jo products available hai woh sab nikal do
+            } //data create ho raha hai jo match karega colorModel mein jo color_id banaya tha us se
+        }
+        if (query.brand_ids !== undefined) {
+
+            const brandSlugs = query.brand_ids.split("_") // split = string -> array
+
+            const brands = await BrandModel.find({ slug: { $in: brandSlugs } }).select("_id name")
+            const brandIds = brands.map(b => b._id);
+            // in => Give me all brands from the database whose slug is in the list colorSlugs
+            dynamicQuery.brand_id = { //brand_id because this is the name in product schema
+                $in: brandIds //array jo aayi hai brands ki jo user ne select ki hai usmein se jo bhi database mein products hai uski brand ids se match ho rahi hai woh products nikal do 
+            }
+            // problem => when do brands selected altogether it returns all the products instead of the specific ones
+        }
         if (query.category_slug !== undefined) {
             const category = await CategoryModel.findOne({ slug: query.category_slug })
             if (category) {
                 dynamicQuery.category_id = category._id;
+            }
+        }
+
+        dynamicSort = {};
+        // dynamic sort isliye kyunki sorting kabhi products ki hogi kabhi dates ki hogi isliye dynamic sorting.
+        if (query.sortby) {
+            if (query.sortby == '1') { //latest
+                dynamicSort.createdAt = -1; // -1 shows the newest data //-1 is for descending order
+            } else if (query.sortby == '2') { //oldest
+                dynamicSort.createdAt = 1;
+            } else if (query.sortby == '3') { //low to high
+                dynamicSort.final_price = 1; //chote pehle dikhenge => ascending order
+            } else if (query.sortby == '4') { //high to low
+                dynamicSort.final_price = -1;
+            } else if (query.sortby == '5') { //A to Z
+                dynamicSort.name = 1; //ascending order
+            } else if (query.sortby == '6') { //Z to A
+                dynamicSort.name = -1;
             }
         }
 
@@ -53,12 +94,14 @@ const getData = async (req, res) => {
                 path: "brand_id",
                 select: "name"
             }
-        ]).limit(query.limit ? parseInt(query.limit) : 0);
+        ]).limit(query.limit ? parseInt(query.limit) : 0)
+            .sort(dynamicSort);
         // query mein limit exist karti hai to integer banake daal do warna default zero limit hogi
         //populate - meaning jo bhi data is product ke module se linked hai unko ek jagah par leke aana
         res.send({
             msg: "All the Products",
             flag: 1,
+            total_products: products.length,
             products,
             imageURL: "http://localhost:5000/images/product/"
         })

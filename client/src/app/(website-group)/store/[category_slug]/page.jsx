@@ -2,9 +2,24 @@ import BestSeller from "@/components/website/BestSeller";
 import ProductListing from "@/components/website/ProductListing";
 import { getProducts } from "@/api-calls/product";
 
-export default async function CategorySlugPage({ params }) {
+export default async function CategorySlugPage({ params, searchParams }) {
     const { category_slug } = await params;
-    const productJSON = await getProducts({ category_slug: category_slug, status: true });
+    const query = { category_slug: category_slug, status: true };
+    const urlSearchParams = await searchParams;
+    if (urlSearchParams.brand_ids) { //it's brand slug not ids.. same with color_slug
+        query.brand_ids = urlSearchParams.brand_ids;
+    }
+    if (urlSearchParams.color_ids) {
+        query.color_ids = urlSearchParams.color_ids;
+    }
+    if (urlSearchParams.sortby) {
+        query.sortby = urlSearchParams.sortby
+    }
+    if (urlSearchParams.limit) {
+        query.limit = urlSearchParams.limit
+    }
+
+    const productJSON = await getProducts(query);
     const imageURL = productJSON.imageURL;
     const productData = productJSON.products;
     const bestCategoryProducts = productData.filter(prod => prod.is_best == true);

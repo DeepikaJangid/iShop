@@ -27,6 +27,15 @@ const getProducts = async (searchparams = {}) => {
         if (searchparams.category_slug !== undefined) {
             query.append("category_slug", searchparams.category_slug);
         }
+        if (searchparams.color_ids !== undefined) {
+            query.append("color_ids", searchparams.color_ids);
+        }
+        if (searchparams.brand_ids !== undefined) {
+            query.append("brand_ids", searchparams.brand_ids);
+        }
+        if (searchparams.sortby !== undefined) {
+            query.append("sortby", searchparams.sortby);
+        }
         const response = await axiosApiInstance.get(`product?${query.toString()}`)
         // jo query bani hai use string mein convert krke backend server par bhej diya
         if (response.data.flag == 1) {

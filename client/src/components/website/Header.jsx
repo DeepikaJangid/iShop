@@ -8,10 +8,12 @@ import { getCategories } from "@/api-calls/category";
 import { useDispatch, useSelector } from 'react-redux';
 import { setData as setCategoryData } from '@/redux/reducers/CategoryReducer';
 import { lstoUser } from '@/redux/reducers/UserReducer';
+import { useSearchParams } from 'next/navigation';
 // import { setData as setCategoryData } from '../../redux/reducers/CategoryReducer';
 // as means alias --> alias mtlab ki is page par setData ko kis naam se jana jayega
 
 export default function Header() {
+  const searchParams = useSearchParams();
   const dispatcher = useDispatch();
   // const fetchCategory = async () => {
   //   const categoriesDataJSON = await getCategories();
@@ -26,6 +28,9 @@ export default function Header() {
   //     fetchCategory();
   //   }, []
   // )
+
+  const currentSortBy = Number(searchParams.get('sortby')) || 1; //if there is new sortby or limit values in the url after the first render of the store page. if there is new value show the new filter's values data if not then show sortby=1&limit=4 by default.
+  const currentLimit = Number(searchParams.get('limit')) || 4;
 
   useEffect(
     () => {
@@ -86,7 +91,7 @@ export default function Header() {
               <Link href={"/page"} className='flex items-center w-fit hover:cursor-pointer uppercase font-bold text-[14px]'>
                 Pages <FaAngleDown className='text-[12px] ms-1' />
               </Link>
-              <Link href={"/store"} className='flex items-center w-fit hover:cursor-pointer uppercase font-bold text-[14px]'>
+              <Link href={`/store?sortby=${currentSortBy}&limit=${currentLimit}`} className='flex items-center w-fit hover:cursor-pointer uppercase font-bold text-[14px]'>
                 Store <FaAngleDown className='text-[12px] ms-1' />
               </Link>
               <Link href={"/product"} className='flex items-center w-fit hover:cursor-pointer uppercase font-bold text-[14px]'>
@@ -102,14 +107,14 @@ export default function Header() {
 
           <div className='hidden md:flex md:gap-x-6 lg:gap-x-9 w-fit md:ms-6 lg:ms-0 tracking-wide'>
 
-            <p className='mt-1 flex flex-col text-[13px] font-semibold text-[#000000]'>{user !== null ? user.name : "Welcome"} <br />
+            <p className='mt-1 flex flex-col text-[13px] font-semibold text-[#000000] hover:cursor-pointer'>{user ? <Link href={"/profile"} className='hover:text-[#01A49E]'>{user.name}</Link> : "Welcome"}
               {
                 user == null
                   ?
-                  <Link href={"/register"} className='text-black hover:cursor-pointer font-bold text-[14px]'>Log In / Register</Link>
+                  <Link href={"/login"} className='text-black hover:cursor-pointer font-bold text-[14px]'>Log In / Register</Link>
                   :
                   <button
-                    className='text-[12px] text-[#666666] hover:cursor-pointer ml-auto'>
+                    className='text-[12px] text-[#666666] hover:cursor-pointer ml-auto hover:text-[#01a49f6a]'>
                     Logout
                   </button>
               }
