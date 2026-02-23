@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const ShippingAddressSchema = new mongoose.Schema(
     {
         addressLine1: { type: String, required: true, trim: true },
-        addressLine1: { type: String, required: false, trim: true },
+        addressLine2: { type: String, required: false, trim: true },
         city: { type: String, required: true, trim: true },
         contact: { type: String, default: null },
         state: { type: String, required: true },

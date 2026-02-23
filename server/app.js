@@ -7,6 +7,7 @@ const ColorRouter = require('./routes/ColorRoute');
 const BrandRouter = require('./routes/BrandRoute');
 const ProductRouter = require('./routes/ProductRoute');
 const UserRouter = require('./routes/UserRoute');
+const CartRouter = require('./routes/CartRoute');
 
 dotenv.config('.env') //in the bracket .env is the file name. or you can also write any name and then end it with ".env". 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/colors', ColorRouter);
 app.use('/product', ProductRouter)
 app.use('/user', UserRouter)
 // app.use('/variant')
+app.use('/cart', CartRouter);
 
 connectDB()
     .then(

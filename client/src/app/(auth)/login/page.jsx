@@ -3,21 +3,24 @@ import { Context } from '@/context/main-context';
 import { axiosApiInstance } from '@/helper/helper';
 import { setData } from '@/redux/reducers/UserReducer';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useContext } from 'react'
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa6";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+
 export default function login() {
+    const cart = useSelector((store) => store.cart);
+    // const cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : null; //this is for when the user authentication folder it separate like client and server folders. this will cause reload on the click of login and that can reset the cart that's why this code of line is for getting cart data directly from local storage and not redux
+    const searchParams = useSearchParams();
     const dispatcher = useDispatch();
     const router = useRouter()
     const { showPassword, togglePassword } = useContext(Context);
 
     const submitHandler = (event) => {
         event.preventDefault();
-
         const data = {
             user_email: event.target.email.value,
             user_password: event.target.password.value,
@@ -26,17 +29,50 @@ export default function login() {
         axiosApiInstance.post("/user/login", data).then(
             (response) => {
                 if (response.data.flag === 1) {
+                    dispatcher(setData({ user: response.data.userData }));
                     toast.success(response.data.msg);
-                    dispatcher(setData({ user: response.data.userData }))
-                    router.push("/");
+                    axiosApiInstance.post("/cart/sync-cart",
+                        {
+                            cart_data: cart?.data?.length == 0 ? [] : cart?.data,
+                            user_id: response.data.userData._id,
+                        }
+                    ).then(
+                        (response) => {
+                            if (response.data.flag == 1) {
+                                let final_total = 0, original_total = 0;
+                                const cartData = response?.data?.finalCart?.map(
+                                    (cart_item) => {
+                                        final_total += cart_item.quantity * cart_item.product_id.final_price;
+                                        original_total += cart_item.quantity * cart_item.product_id.original_price;
+                                        return {
+                                            id: cart_item.product_id._id,
+                                            qty: cart_item.quantity,
+                                            name: cart_item.product_id.name,
+                                            imageURL: process.env.NEXT_PUBLIC_PRODUCT_IMAGE_BASE_URL + "main_images/" + cart_item.product_id.thumbnail,
+                                            original_price: cart_item.product_id.original_price,
+                                            final_price: cart_item.product_id.final_price,
+                                        }
+                                    }
+                                )
+                                localStorage.setItem("cart", JSON.stringify({ data: cartData, original_total, final_total }));
+                            }
+                            if (searchParams.get('redirect')) {
+                                router.push(searchParams.get('redirect')); //jo bhi value redirect mein aayi hai wahi push krdo(this is for when user logs in from checkout page.)
+                            } else {
+                                router.push("/");
+                            }
+                        }
+                    ).catch(() => {
+                    })
                 } else if (response.data.flag === 0) {
+                    console.log('error block in login page')
                     toast.error(response.data.msg);
                 }
             }
         ).catch(
             (error) => {
                 console.log(error);
-                toast.warning(error.data.message);
+                toast.warning(error.response.data.message);
             }
         )
     }
@@ -45,12 +81,12 @@ export default function login() {
         <>
             {/* breadcrumbs section */}
             {/* <section className='w-full md:min-w-[510px] bg-white rounded-[10px] my-4'>
-                <ul className='max-w-[1300px] m-full md:min-w-[510px] text-[12px] md:text-[14px] text-[#999999] font-bold list-none flex items-center capitalize gap-x-2 p-5 md:py-6 md:px-6 lg:px-9'>
-                    <Link href={"/"} className='hover:cursor-pointer'>home / </Link>
-                    <li className='hover:cursor-pointer'> pages / </li>
-                    <Link href={"/login"} className='hover:cursor-pointer text-black'> login</Link>
-                </ul>
-            </section> */}
+                    <ul className='max-w-[1300px] m-full md:min-w-[510px] text-[12px] md:text-[14px] text-[#999999] font-bold list-none flex items-center capitalize gap-x-2 p-5 md:py-6 md:px-6 lg:px-9'>
+                        <Link href={"/"} className='hover:cursor-pointer'>home / </Link>
+                        <li className='hover:cursor-pointer'> pages / </li>
+                        <Link href={"/login"} className='hover:cursor-pointer text-black'> login</Link>
+                    </ul>
+                </section> */}
 
             <section className='w-full min-h-screen md:min-w-[510px] bg-white flex items-center justify-center'>
                 <section className='max-w-[1300px] shadow-2xl mx-auto rounded-2xl px-3 sm:px-5 lg:px-8 py-5 md:py-8 lg:py-12'>

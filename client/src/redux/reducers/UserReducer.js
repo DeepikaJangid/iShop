@@ -8,19 +8,29 @@ const UserSlice = createSlice(
         },
         reducers: {
             setData(current_state, { payload }) {
-                current_state.data = payload.user;
-                localStorage.setItem("user", JSON.stringify(payload.user)); //data local storage mein save karna
+                // current_state.data = payload.user;
+                // localStorage.setItem("user", JSON.stringify(payload.user));
+                current_state.data = payload.user ?? null; // if payload.user is either null or undefined, then assign null instead.
+                if (payload.user) {
+                    localStorage.setItem("user", JSON.stringify(payload.user));
+                } else {
+                    localStorage.removeItem("user"); // or localStorage.setItem("user", null);
+                }
             },
             lstoUser(current_state) { //data fir se get karna
-                const lsUserData = JSON.parse(localStorage.getItem("user"));
-                if (lsUserData) {
-                    current_state.data = lsUserData
+                const lsUserData = localStorage.getItem("user");
+                if (lsUserData && lsUserData !== "undefined") {
+                    current_state.data = JSON.parse(lsUserData);
                 }
+            },
+            logout(current_state) {
+                current_state.data = null;
+                localStorage.removeItem('user');
             }
         }
     }
 )
 
-export const { setData, lstoUser } = UserSlice.actions; //actions = functions
+export const { setData, lstoUser, logout } = UserSlice.actions; //actions = functions
 
 export default UserSlice.reducer;

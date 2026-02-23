@@ -6,15 +6,17 @@ import { IoMdCart } from "react-icons/io";
 import Link from 'next/link';
 import { getCategories } from "@/api-calls/category";
 import { useDispatch, useSelector } from 'react-redux';
-import { setData as setCategoryData } from '@/redux/reducers/CategoryReducer';
-import { lstoUser } from '@/redux/reducers/UserReducer';
+import { logout, lstoUser } from '@/redux/reducers/UserReducer';
+import { emptyCart, lsToCart } from '@/redux/reducers/CartReducer';
 import { useSearchParams } from 'next/navigation';
-// import { setData as setCategoryData } from '../../redux/reducers/CategoryReducer';
+import { formatPriceINR } from '@/helper/helper';
+// import { setData as setCategoryData } from '@/redux/reducers/CategoryReducer';
 // as means alias --> alias mtlab ki is page par setData ko kis naam se jana jayega
 
 export default function Header() {
   const searchParams = useSearchParams();
   const dispatcher = useDispatch();
+
   // const fetchCategory = async () => {
   //   const categoriesDataJSON = await getCategories();
   //   dispatcher(setCategoryData(
@@ -30,16 +32,22 @@ export default function Header() {
   // )
 
   const currentSortBy = Number(searchParams.get('sortby')) || 1; //if there is new sortby or limit values in the url after the first render of the store page. if there is new value show the new filter's values data if not then show sortby=1&limit=4 by default.
-  const currentLimit = Number(searchParams.get('limit')) || 4;
-
+  const currentLimit = Number(searchParams.get('limit')) || 8;
+  const cart = useSelector(store => store.cart);
+  // useSelector lets a React component read data from the Redux store. When the data changes, the component automatically re-renders.
   useEffect(
     () => {
       dispatcher(lstoUser());
+      dispatcher(lsToCart());
     }, []
   )
 
-  const user = useSelector((state) => state.user.data);
+  const logoutHandler = () => {
+    dispatcher(logout());
+    dispatcher(emptyCart());
+  }
 
+  const user = useSelector((state) => state.user.data);
   return (
     // data - aos= "fade-down"
     <section className='w-full bg-white sticky shadow-lg top-0 rounded-[10px] z-50' >
@@ -111,9 +119,10 @@ export default function Header() {
               {
                 user == null
                   ?
-                  <Link href={"/login"} className='text-black hover:cursor-pointer font-bold text-[14px]'>Log In / Register</Link>
+                  <Link href={"/login?redirect=/"} className='text-black hover:cursor-pointer font-bold text-[14px]'>Log In / Register</Link>
                   :
                   <button
+                    onClick={logoutHandler}
                     className='text-[12px] text-[#666666] hover:cursor-pointer ml-auto hover:text-[#01a49f6a]'>
                     Logout
                   </button>
@@ -121,18 +130,18 @@ export default function Header() {
             </p>
             {/* login */}
 
-            <div className='flex items-center gap-x-2'>
-
+            <Link href={'/cart'} className='flex items-center gap-x-2'>
               <div className='bg-[#EBEEF6] rounded-full h-10 w-10 flex items-center justify-center relative'>
                 <IoMdCart className='text-2xl text-[#01A49E]' />
-                <div className='bg-[#01A49E] h-[18px] w-[18px] rounded-full absolute -bottom-1 -right-1'><p className='mt-[1.5px] text-center text-white text-[11px]'>5</p></div>
+                <div className='bg-[#01A49E] h-[18px] w-[18px] rounded-full absolute -bottom-1 -right-1'><p className='mt-[1.5px] text-center text-white text-[11px]'>{cart?.data?.length}</p></div>
               </div>
               <div className='uppercase tracking-wide'>
                 <p className='text-[11px] text-[#666666]'>cart <br />
-                  <span className='text-black hover:cursor-pointer font-bold text-[14px]'>₹1234.00</span>
+                  <span className='text-black hover:cursor-pointer font-bold text-[14px]'>₹ {formatPriceINR(cart?.final_total)} </span> <br />
+                  <del className='text-gray-500 hover:cursor-pointer font-bold text-[14px]'>₹ {formatPriceINR(cart?.original_total)}</del>
                 </p>
               </div>
-            </div>
+            </Link>
             {/* cart */}
 
           </div>

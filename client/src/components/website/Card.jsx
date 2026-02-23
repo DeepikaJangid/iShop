@@ -1,7 +1,10 @@
 import React from 'react'
 import { FaCheckCircle } from "react-icons/fa";
+import AddToCartButton from './AddToCartButton';
+import { formatPriceINR } from '@/helper/helper';
 
 export default function Card({ _id, discount_percentage, imageURL, name, final_price, original_price, stock, is_best }) {
+    // product listing page se props aa rhe hai
     return (
         <div className="relative flex flex-col w-[185px] mt-3 mb-2">
             {is_best == true ? <div className="absolute w-fit left-0 right-0 bg-[#1ABA1A] text-white text-[10px] px-2 py-1 rounded uppercase">
@@ -23,9 +26,9 @@ export default function Card({ _id, discount_percentage, imageURL, name, final_p
             </span>
 
             <p className="text-red-500 font-semibold text-[14px]">
-                ₹{final_price}
+                ₹{formatPriceINR(final_price)}
                 <span className="line-through text-[#666666] text-[12px] ml-1">
-                    ₹{original_price}
+                    ₹{formatPriceINR(original_price)}
                 </span>
             </p>
 
@@ -42,6 +45,10 @@ export default function Card({ _id, discount_percentage, imageURL, name, final_p
                 />
                 {stock ? "In Stock" : "Out of Stock"}
             </span>
+
+            <div className="mt-2 md:mt-3">
+                <AddToCartButton id={_id} imageURL={imageURL} name={name} final_price={final_price} original_price={original_price} />
+            </div>
         </div>
     )
 }
