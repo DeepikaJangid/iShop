@@ -12,8 +12,8 @@ export default function AdminDashboard() {
                     <p className="text-gray-600 mt-2">Your overview of products, orders, and sales.</p>
                 </div>
 
-                <img src="https://media.tenor.com/uQSzEsNIZkIAAAAm/blackpink-eating.webp" alt="" />
-                <img src="https://media1.tenor.com/m/UFpi4Wt4JRwAAAAd/awoo-cat-baby-cat.gif" className="h-[199px] w-[200px] rounded-full object-contain" alt="" />
+                {/* <img src="https://media.tenor.com/uQSzEsNIZkIAAAAm/blackpink-eating.webp" alt="" />
+                <img src="https://media1.tenor.com/m/UFpi4Wt4JRwAAAAd/awoo-cat-baby-cat.gif" className="h-[199px] w-[200px] rounded-full object-contain" alt="" /> */}
 
                 <div className="flex items-center gap-6">
                     <Link href={"/admin"} className="bg-linear-to-r from-teal-500 to-teal-700 text-white px-6 py-3 rounded-full shadow-md hover:scale-105 transition transform flex items-center hover:cursor-pointer">
