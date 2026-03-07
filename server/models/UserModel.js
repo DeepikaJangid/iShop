@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-
 const ShippingAddressSchema = new mongoose.Schema(
     {
+        name: { type: String, required: true },
         addressLine1: { type: String, required: true, trim: true },
         addressLine2: { type: String, required: false, trim: true },
         city: { type: String, required: true, trim: true },
@@ -37,6 +37,10 @@ const UserSchema = new mongoose.Schema(
         shipping_address: {
             type: [ShippingAddressSchema],
             default: [],
+        },
+        default_address: {
+            type: Number,
+            default: 0
         }
     },
     {

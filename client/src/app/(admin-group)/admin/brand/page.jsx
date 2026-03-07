@@ -14,9 +14,6 @@ export default async function BrandsPage() {
     const brandJSON = await getBrands();
     const brandData = brandJSON.brands;
 
-    // console.log(brandJSON.imageURL);
-    // console.log(brandData.image_name);
-
     return (
         <div className="min-h-screen bg-slate-50 p-8">
             <div className="max-w-7xl mx-auto">

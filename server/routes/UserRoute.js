@@ -1,37 +1,36 @@
 const express = require('express');
-const { register, login, } = require('../controllers/UserController');
+const { register, login, getAddresses, addAddress, updateAddress, deleteAddress } = require('../controllers/UserController');
 
 const UserRouter = express.Router();
 
 UserRouter.post(
     "/register", // /user/register
     register
-)
-
+);
 
 UserRouter.post(
     "/login", // /user/login
     login
-)
+);
 
-// UserRouter.post(
-//     "/:id",
-//     getDataById
-// )
+UserRouter.get(
+    "/:id/addresses",
+    getAddresses
+);
 
-// UserRouter.patch(
-//     "/status/:id",
-//     setStatus
-// )
+UserRouter.post(
+    "/:id/address/add",
+    addAddress
+);
 
-// UserRouter.put(
-//     "/update/:id",
-//     updateData
-// )
+UserRouter.put(
+    "/:id/address/update",
+    updateAddress
+);
 
-// UserRouter.delete(
-//     "/delete/:id",
-//     deleteData
-// )
+UserRouter.delete(
+    "/:id/address/delete",
+    deleteAddress
+);
 
 module.exports = UserRouter;

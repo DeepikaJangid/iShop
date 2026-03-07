@@ -1,0 +1,24 @@
+# root dependencies
+node_modules/
+
+# client dependencies
+client/node_modules/
+
+# server dependencies
+server/node_modules/
+
+# environment variables
+.env
+
+# Next.js build files
+client/.next/
+
+# build folders
+build/
+dist/
+
+# logs
+npm-debug.log*
+
+# OS files
+.DS_Store

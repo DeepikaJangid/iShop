@@ -14,5 +14,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "concurrently": "^9.2.1"
+  },
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.10.0"
   }
 }

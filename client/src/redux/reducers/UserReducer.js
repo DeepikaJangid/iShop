@@ -26,11 +26,16 @@ const UserSlice = createSlice(
             logout(current_state) {
                 current_state.data = null;
                 localStorage.removeItem('user');
-            }
+            },
+            setShippingAddresses: (current_state, { payload }) => {
+                if (!current_state.data) return;
+                current_state.data.shipping_address = payload;
+                localStorage.setItem("user", JSON.stringify(current_state.data));
+            },
         }
     }
 )
 
-export const { setData, lstoUser, logout } = UserSlice.actions; //actions = functions
+export const { setData, lstoUser, logout, setShippingAddresses } = UserSlice.actions; //actions = functions
 
 export default UserSlice.reducer;
